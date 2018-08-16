@@ -1,0 +1,17 @@
+.con-left{
+    padding-left: 0;
+    padding-right: 0;
+    height:500px;
+}
+.con-left ul li a{
+    border-radius:0;
+}
+.con-right{
+    height: 500px;
+    border-left: 3px solid #337ab7;
+    overflow: auto;
+}
+.course-des{
+    padding-top: 10px;
+    color: #3c763d;
+}

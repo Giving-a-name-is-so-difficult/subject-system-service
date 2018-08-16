@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>实验预约管理网站</title>
+
+    <!-- Bootstrap -->
+    <link href="./css/lib/bootstrap/bootstrap.css" rel="stylesheet">
+    <link rel="stylesheet" href="./css/index.css">
+    <link rel="stylesheet" href="./css/student.css">
+</head>
+<body>
+<div id="mask"></div>
+<nav class="navbar navbar-default my-nav">
+    <div class="navbar-header">
+        <a class="navbar-brand" href="#">实验预约管理系统</a>
+    </div>
+    <ul class="nav navbar-nav navbar-right">
+        <li><a href="#" style="font-size: 13px;color:#67b168 !important;">小明</a></li>
+        <li><a href="./index.html" style="font-size: 13px;color:#67b168 !important; margin-right: 20px;margin-left: -10px;">退出登录</a></li>
+    </ul>
+</nav>
+
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-3 con-left bg-info">
+            <ul class="nav nav-pills  nav-stacked student-tab" role="tablist">
+                <li role="presentation"  class="active"><a href="#my_course" role="tab" data-toggle="tab">我的课堂</a></li>
+                <li role="presentation"><a href="#join_sta" role="tab" data-toggle="tab">参与统计</a></li>
+                <li role="presentation"><a href="#course_select" role="tab" data-toggle="tab">选择课堂</a></li>
+                <li role="presentation"><a href="#experiment_select" role="tab" data-toggle="tab">选择实验</a></li>
+            </ul>
+        </div>
+        <div class="col-md-9 con-right bg-info">
+            <div class="tab-content">
+                <div role="tabpanel" class="tab-pane active" id="my_course">
+                    <table id="all-course" class="table table-bordered table-striped table-hover">
+                        <thead>
+                        <tr>
+                            <td>课序号</td>
+                            <td>课程号</td>
+                            <td>课堂名称</td>
+                            <td>管理</td>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>000001</td>
+                            <td>1</td>
+                            <td>电机学（一）</td>
+                            <td width="250" style="text-align: center;">
+                                <button class="btn btn-info getin-course" style="margin-right: 20px">进入课堂</button>
+                                <button class="btn btn-danger quit-course" >退出课堂</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>000002</td>
+                            <td>1</td>
+                            <td>潮流计算</td>
+                            <td width="250" style="text-align: center;">
+                                <button class="btn btn-info getin-course" style="margin-right: 20px">进入课堂</button>
+                                <button class="btn btn-danger quit-course" >退出课堂</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>000003</td>
+                            <td>2</td>
+                            <td>电力电子</td>
+                            <td width="250" style="text-align: center;">
+                                <button class="btn btn-info getin-course" style="margin-right: 20px">进入课堂</button>
+                                <button class="btn btn-danger quit-course" >退出课堂</button>
+                            </td>
+
+                        </tr>
+
+                        </tbody>
+                    </table>
+                    <div class="course-detail hidden">
+                        <ul class="nav nav-tabs" role="tablist">
+                            <li role="presentation" class="active"><a href="#experiment_now" role="tab" data-toggle="tab">当前实验</a></li>
+                            <li role="presentation"><a href="#experiment_before" role="tab" data-toggle="tab">历史实验</a></li>
+                            <li class="course-des pull-right">课堂ID:#01 课堂名称：电机学（一）  <button  class="btn btn-default" id="back">返回</button></li>
+                        </ul>
+                        <div class="tab-content">
+                            <div role="tabpanel" class="tab-pane active" id="experiment_now">
+                                <table class="table table-bordered table-striped table-hover">
+                                    <thead>
+                                    <tr>
+                                        <td>实验序号</td>
+                                        <td>实验名称</td>
+                                        <td>实验日期</td>
+                                        <td>管理</td>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>电机学课内实验一</td>
+                                        <td>2018-6-15 第一大节</td>
+                                        <td width="250" style="text-align: center;">
+                                            <button class="btn btn-danger del-experiment" type="submit">删除实验</button>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div role="tabpanel" class="tab-pane" id="experiment_before">
+                                <table class="table table-bordered table-striped table-hover">
+                                    <thead>
+                                    <tr>
+                                        <td>实验序号</td>
+                                        <td>实验名称</td>
+                                        <td>实验日期</td>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>电机学课内实验一</td>
+                                        <td>2018-5-16 第三大节</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+
+
+                <div role="tabpanel" class="tab-pane" id="join_sta">
+                    <table id="all_course_statistics" class="table table-bordered table-striped table-hover">
+                        <thead>
+                        <tr>
+                            <td>课序号</td>
+                            <td>课程号</td>
+                            <td>课堂名称</td>
+                            <td>管理</td>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>000001</td>
+                            <td>1</td>
+                            <td>电机学（一）</td>
+                            <td width="250" style="text-align: center;">
+                                <button class="btn btn-success look" type="submit">查看统计</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>000002</td>
+                            <td>1</td>
+                            <td>潮流计算</td>
+                            <td width="250" style="text-align: center;">
+                                <button class="btn btn-success look" type="submit">查看统计</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>000003</td>
+                            <td>2</td>
+                            <td>电力电子</td>
+                            <td width="250" style="text-align: center;">
+                                <button class="btn btn-success look" type="submit">查看统计</button>
+                            </td>
+
+                        </tr>
+
+                        </tbody>
+                    </table>
+                    <div class="hidden" id="sta_detail">
+                        <hr style="border: 1px solid #67b168;">
+                        <h3>统计信息</h3>
+                        <table id="statistics_info" class="table table-bordered table-striped table-hover">
+                            <thead>
+                            <tr>
+                                <td>实验名称</td>
+                                <td>实验日期</td>
+                                <td>距结束还剩时长</td>
+                                <td>管理</td>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>电机学课内实验二</td>
+                                <td>2018-8-20 至 2018-8-27</td>
+                                <td>24h</td>
+                                <td width="250" style="text-align: center;">
+                                    <!--<button class="btn btn-success query" type="submit">投票</button>-->
+                                    <button type="button" class="btn btn-success" data-toggle="modal" data-target="#myModal">
+                                        投票
+                                    </button>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        <div style="text-align: center;">
+                            <button class="btn btn-primary" id="sta_detail_back" style="width: 150px;">返回</button>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div role="tabpanel" class="tab-pane" id="course_select">
+
+                    <form style="width: 80%;padding-top: 20px" class="center-block">
+                        <div class="form-group">
+                            <label for="class_id">课序号</label>
+                            <input type="number" class="form-control" id="class_id" placeholder="请输入课序号">
+                        </div>
+                        <div class="form-group">
+                            <label for="class_id2">课程号</label>
+                            <input type="number" class="form-control" id="class_id2" placeholder="请输入课程号">
+                        </div>
+                    </form>
+                    <button class="btn btn-success center-block" id="course_select_search" style="width: 100px;margin-top: 50px;margin-bottom: 50px;">搜索</button>
+
+                    <div class="search-class-result hidden">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">电机学（一）</div>
+                            <div class="panel-body">
+                                李老师
+                            </div>
+                        </div>
+                        <button class="btn btn-success center-block" style="width: 100px;margin-top: 50px;margin-bottom: 50px;">选择</button>
+
+                    </div>
+                </div>
+
+
+                <div role="tabpanel" class="tab-pane" id="experiment_select">
+                    <table class="table table-bordered table-striped table-hover" id="select_class_info">
+                        <thead>
+                        <tr>
+                            <td>课序号</td>
+                            <td>课程号</td>
+                            <td>课堂名称</td>
+                            <td>管理</td>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>000001</td>
+                            <td>1</td>
+                            <td>电机学（一）</td>
+                            <td width="250" style="text-align: center;">
+                                <button class="btn btn-info look-exp">查看实验</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>000002</td>
+                            <td>1</td>
+                            <td>潮流计算</td>
+                            <td width="250" style="text-align: center;">
+                                <button class="btn btn-info look-exp">查看实验</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>000003</td>
+                            <td>2</td>
+                            <td>电力电子</td>
+                            <td width="250" style="text-align: center;">
+                                <button class="btn btn-info look-exp">查看实验</button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <div class="hidden" id="select_exp_info">
+                        <hr style="border: 1px solid #67b168;">
+                        <h3>统计信息</h3>
+                        <table class="table table-bordered table-striped table-hover">
+                            <thead>
+                            <tr>
+                                <td>实验名称</td>
+                                <td>实验日期</td>
+                                <td>实验时间</td>
+                                <td>课余量</td>
+                                <td>管理</td>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>电机学课内实验二</td>
+                                <td>2018-8-21</td>
+                                <td>第一大节</td>
+                                <td>20</td>
+                                <td width="250" style="text-align: center;">
+                                    <button class="btn btn-success choose" type="submit">选择</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>电机学课内实验二</td>
+                                <td>2018-8-22</td>
+                                <td>第三大节</td>
+                                <td>2</td>
+                                <td width="250" style="text-align: center;">
+                                    <button class="btn btn-success choose" type="submit">选择</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>电机学课内实验二</td>
+                                <td>2018-8-23</td>
+                                <td>第一大节</td>
+                                <td>5</td>
+                                <td width="250" style="text-align: center;">
+                                    <button class="btn btn-success choose" type="submit">选择</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>电机学课内实验二</td>
+                                <td>2018-8-23</td>
+                                <td>第四大节</td>
+                                <td>0</td>
+                                <td width="250" style="text-align: center;">
+                                    <button class="btn btn-success choose" type="submit">选择</button>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        <div style="text-align: center;">
+                            <button class="btn btn-primary" id="exp_select_info_back" style="width: 150px;">返回</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--投票模态框-->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">投票</h4>
+            </div>
+            <div class="modal-body">
+                <div class="input-group">
+                    <span class="input-group-addon" id="basic-addon1">实验日期</span>
+                    <input type="date" class="form-control" placeholder="请选择实验日期" aria-describedby="basic-addon1">
+                </div>
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox"> 第一大节
+                    </label>
+                </div>
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox"> 第二大节
+                    </label>
+                </div>
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox"> 第三大节
+                    </label>
+                </div>
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox"> 第四大节
+                    </label>
+                </div>
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox"> 第五大节
+                    </label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" data-dismiss="modal">提交</button>
+                <!--<button type="button" class="btn btn-success"></button>-->
+            </div>
+        </div>
+    </div>
+</div>
+<!--投票模态框-->
+
+<!-- jQuery (Bootstrap 的所有 JavaScript 插件都依赖 jQuery，所以必须放在前边) -->
+<script src="./js/lib/jquery/jquery-1.12.4.js"></script>
+<!-- 加载 Bootstrap 的所有 JavaScript 插件。你也可以根据需要只加载单个插件。 -->
+<script src="./js/lib/bootstrap/bootstrap.min.js"></script>
+<script src="./js/index.js"></script>
+<script src="./js/student.js"></script>
+</body>
+</html>

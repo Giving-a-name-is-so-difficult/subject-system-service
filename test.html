@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<ul>
+    <li>111</li>
+    <li>222</li>
+    <li>3333</li>
+</ul>
+<button>click</button>
+
+</body>
+<script src="./front%20end/js/lib/jquery/jquery-1.12.4.js"></script>
+<script>
+    $(function () {
+        $('button').click(()=>{
+            $('ul').append('<li>我是新增的</li>')
+        })
+        $("li").click(function () {
+            console.log($(this).html())
+
+        })
+//        $("ul").delegate("li", "click", function () {
+//            console.log($(this).html());
+//        });
+
+    })
+</script>
+</html>
