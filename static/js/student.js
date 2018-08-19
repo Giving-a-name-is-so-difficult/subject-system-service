@@ -208,13 +208,20 @@ $(function () {
 
     $('#model_submit').click(function () {
         $(this).attr('disabled','disabled')
-        let date = $('#modal_date').val()
-        let date2 = $('#myModal input[type=radio]:checked').val()
-        if(date === ''|| date2 ===''){
+        let $day = $('.which-day').find('input:checkbox[name="modal_day"]:checked')
+        let days=[]
+        for(let i = 0;i<$day.length;i++){
+            days.push($day.eq(i).val())
+        }
+        let $time = $('.which-class').find('input:checkbox[name="modal_time"]:checked')
+        let times=[]
+        for(let i = 0;i<$time.length;i++){
+            times.push($time.eq(i).val())
+        }
+        if(days.length === 0|| times.length ===0){
             alert('请选择完整信息')
             $('#model_submit').removeAttr('disabled')
         }else{
-            let time = date + ' '+date2
             $.ajax({
                 type:'post',
                 url:domain + 'student/vote',
@@ -222,7 +229,8 @@ $(function () {
                     "userId":getCookie('userId'),
                     "staId":getCookie('_id'),
                     "courseId":getCookie('sta_courseId'),
-                    "time":time
+                    "days":days,
+                    "times":times
                 },
                 success:function (msg) {
                     if(msg.state === 'error'){

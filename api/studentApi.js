@@ -360,7 +360,8 @@ router.post('/getExpByUserIdAndCourseId', async ctx => {
 router.post('/vote', async ctx => {
     let userId = ctx.request.body.userId
     let staId = ctx.request.body.staId
-    let time = ctx.request.body.time
+    let days = ctx.request.body.days
+    let times = ctx.request.body.times
     const stuStatistic = mongoose.model('stuStatistic')
     await stuStatistic.findOne({
         $and: [
@@ -371,64 +372,62 @@ router.post('/vote', async ctx => {
         if (res) {
             ctx.body = {
                 state: 'wrong',
-                data: '已参加该投票，你的选择是' + res.time
+                // data: '已参加该投票，你的选择是' + res.time
+                data: '已参加该投票，你的选择是' +'[' +res.days + ']*' + '['+res.times+']'
             }
         } else {
-            const Statistic = mongoose.model('Statistic')
-            await Statistic.findOne({_id: staId}).then(async res => {
-                if (res) {
-                    let flag = 0
-                    for (let i = 0; i < res.staResult.length; i++) {
-                        if (res.staResult[i].time === time) {
-                            flag = 1;//已有该日期
-                            break;
-                        }
-                    }
+            let newStuStatistic = new stuStatistic(ctx.request.body)
+            await newStuStatistic.save().then(async res => {
+                const Statistic = mongoose.model('Statistic')
+                let saveFlag = 0
+                for(let i = 0;i<days.length;i++){
+                    for(let j = 0;j<times.length;j++){
+                        let temp = days[i] + ' '+ times[j]
+                        await Statistic.findOne({_id: staId}).then(async res => {
+                            if (res) {
+                                let flag = 0
+                                for (let i = 0; i < res.staResult.length; i++) {
+                                    if (res.staResult[i].time === temp) {
+                                        flag = 1;//已有该日期
+                                        break;
+                                    }
+                                }
 
-                    if (flag === 0) {//不存在该日期，插入
-                        await Statistic.update({_id: staId}, {
-                            $push: {
-                                staResult: {
-                                    time: time,
-                                    num: 1
+                                if (flag === 0) {//不存在该日期，插入
+                                    await Statistic.update({_id: staId}, {
+                                        $push: {
+                                            staResult: {
+                                                time: temp,
+                                                num: 1
+                                            }
+                                        }
+                                    }).then(()=>{
+                                        saveFlag++
+                                    }).catch(err => {
+                                        ctx.body = {
+                                            state: 'error',
+                                            data: err
+                                        }
+                                    })
+                                } else {//存在该日期，更新
+                                    await Statistic.update({
+                                        _id: staId,
+                                        "staResult.time": temp
+                                    }, {$inc: {"staResult.$.num": 1}}).then(()=>{
+                                        saveFlag++
+                                    }).catch(err => {
+                                        ctx.body = {
+                                            state: 'error',
+                                            data: err
+                                        }
+                                    })
+                                }
+                            } else {
+                                ctx.body = {
+                                    state: 'wrong',
+                                    data: '该统计不存在'
                                 }
                             }
-                        }).then(async res => {
-                            let newStuStatistic = new stuStatistic(ctx.request.body)
-                            await newStuStatistic.save().then(res => {
-                                ctx.body = {
-                                    state: 'success',
-                                    data: '投票成功'
-                                }
-                            }).catch(err => {
-                                ctx.body = {
-                                    state: 'error',
-                                    data: err
-                                }
-                            })
-                        }).catch(err => {
-                            ctx.body = {
-                                state: 'error',
-                                data: err
-                            }
-                        })
-                    } else {//存在该日期，更新
-                        await Statistic.update({
-                            _id: staId,
-                            "staResult.time": time
-                        }, {$inc: {"staResult.$.num": 1}}).then(async res => {
-                            let newStuStatistic = new stuStatistic(ctx.request.body)
-                            await newStuStatistic.save().then(res => {
-                                ctx.body = {
-                                    state: 'success',
-                                    data: '投票成功'
-                                }
-                            }).catch(err => {
-                                ctx.body = {
-                                    state: 'error',
-                                    data: err
-                                }
-                            })
                         }).catch(err => {
                             ctx.body = {
                                 state: 'error',
@@ -436,11 +435,11 @@ router.post('/vote', async ctx => {
                             }
                         })
                     }
-
-                } else {
+                }
+                if(saveFlag === days.length*times.length){
                     ctx.body = {
-                        state: 'wrong',
-                        data: '该统计不存在'
+                        state:'success',
+                        data:"投票成功"
                     }
                 }
             }).catch(err => {
@@ -449,6 +448,83 @@ router.post('/vote', async ctx => {
                     data: err
                 }
             })
+
+
+
+            // await Statistic.findOne({_id: staId}).then(async res => {
+            //     if (res) {
+            //         let flag = 0
+            //         for (let i = 0; i < res.staResult.length; i++) {
+            //             if (res.staResult[i].time === time) {
+            //                 flag = 1;//已有该日期
+            //                 break;
+            //             }
+            //         }
+            //
+            //         if (flag === 0) {//不存在该日期，插入
+            //             await Statistic.update({_id: staId}, {
+            //                 $push: {
+            //                     staResult: {
+            //                         time: time,
+            //                         num: 1
+            //                     }
+            //                 }
+            //             }).then(async res => {
+            //                 let newStuStatistic = new stuStatistic(ctx.request.body)
+            //                 await newStuStatistic.save().then(res => {
+            //                     ctx.body = {
+            //                         state: 'success',
+            //                         data: '投票成功'
+            //                     }
+            //                 }).catch(err => {
+            //                     ctx.body = {
+            //                         state: 'error',
+            //                         data: err
+            //                     }
+            //                 })
+            //             }).catch(err => {
+            //                 ctx.body = {
+            //                     state: 'error',
+            //                     data: err
+            //                 }
+            //             })
+            //         } else {//存在该日期，更新
+            //             await Statistic.update({
+            //                 _id: staId,
+            //                 "staResult.time": time
+            //             }, {$inc: {"staResult.$.num": 1}}).then(async res => {
+            //                 let newStuStatistic = new stuStatistic(ctx.request.body)
+            //                 await newStuStatistic.save().then(res => {
+            //                     ctx.body = {
+            //                         state: 'success',
+            //                         data: '投票成功'
+            //                     }
+            //                 }).catch(err => {
+            //                     ctx.body = {
+            //                         state: 'error',
+            //                         data: err
+            //                     }
+            //                 })
+            //             }).catch(err => {
+            //                 ctx.body = {
+            //                     state: 'error',
+            //                     data: err
+            //                 }
+            //             })
+            //         }
+            //
+            //     } else {
+            //         ctx.body = {
+            //             state: 'wrong',
+            //             data: '该统计不存在'
+            //         }
+            //     }
+            // }).catch(err => {
+            //     ctx.body = {
+            //         state: 'error',
+            //         data: err
+            //     }
+            // })
         }
     }).catch(err => {
         ctx.body = {

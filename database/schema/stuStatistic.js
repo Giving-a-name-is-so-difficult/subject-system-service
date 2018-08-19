@@ -6,7 +6,8 @@ const stuStaSchema = new Schema({
     userId:String,
     courseId:String,
     staId:String,
-    time:String
+    times:[String],
+    days:[String]
 });
 
 mongoose.model('stuStatistic',stuStaSchema)

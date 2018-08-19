@@ -457,10 +457,16 @@ error:
 /*url:student/vote
  parameter:
  {//示例
- "userId":"201603010309",
- "staId":"5b73ecd41908e53e001f61b5",
- "sta_courseId":"100000-1"
- "time":"2018-8-16 第二大节"
+ // "userId":"201603010309",
+ // "staId":"5b73ecd41908e53e001f61b5",
+ // "sta_courseId":"100000-1"
+ // "time":"2018-8-16 第二大节"
+
+ "userId":"201603010301",
+ "staId":"5b791db1db07f4146027f64e",
+ "courseId":"100000-2",
+ "days":["周一", "周二","周日"],
+ "times":["第一大节", "第三大节"]
  },
  result:
  success:
@@ -471,7 +477,7 @@ error:
  wrong:
  {
  "state": "wrong",
- "data": "已参加该投票，你的选择是2018-8-16 第一大节"
+ "data": "已参加该投票，你的选择是[周一,周二,周日]*[第一大节,第三大节]"
  }
  {
  "state": "wrong",
@@ -815,7 +821,57 @@ error:
  }
  * */
 
+//删除某实验中的学生
+/*
+ url:teacher/delStudentById
+ parameter:
+ {//示例
+ "expId":"100000-1-1",
+ "userId":"201603010301"
+ }
+ result:
+ success:实例
+ {
+ "state": "success",
+ "data": "删除成功"
+ }
+ error:
+ {
+ state:'error'
+ data:err
+ }
+ * */
 
-
+//将学生换组
+/*
+ url:teacher/changeGroup
+ parameter:
+ {//示例
+ "newExpId" : "100000-1-5",
+ "oldExpId" : "100000-1-4",
+ "userId" :	"201603010309",
+ "userName" : "焦乾明",
+ "belongClass" : "电气1602"
+ }
+ result:
+ success:实例
+ {
+ "state": "success",
+ "data": "移入成功"
+ }
+ ctx.body = {
+ state: 'wrong',
+ data: '已加入该实验'
+ }
+ ctx.body = {
+ state: 'wrong',
+ data: '未找到该实验'
+ }
+ error:
+ {
+ state:'error'
+ data:err
+ }
+ * */
 
 

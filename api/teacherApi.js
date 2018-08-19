@@ -442,5 +442,131 @@ router.post('/getStudentById', async ctx => {
     })
 })
 
+//删除学生
+router.post('/delStudentById',async ctx=>{
+    let userId = ctx.request.body.userId
+    let expId = ctx.request.body.expId
+    const Experiment = mongoose.model('Experiment')
+    let courseId = expId.slice(0,expId.lastIndexOf('-'))
+    await Experiment.update({expId:expId},{$pull:{expPerson:{userId:userId}}}).then(async res=>{
+        const stuExperiment = mongoose.model('stuExperiment')
+        await stuExperiment.update({userId:userId,courseId:courseId},{$pull:{exp:{expId:expId}}}).then(res=>{
+            ctx.body = {
+                state:'success',
+                data:'删除成功'
+            }
+        }).catch(err=>{
+            ctx.body = {
+                state:'error',
+                data:err
+            }
+        })
+    }).catch(err=>{
+        ctx.body = {
+            state:'error',
+            data:err
+        }
+    })
+})
+
+//学生换组
+router.post('/changeGroup',async ctx=>{
+    let newExpId = ctx.request.body.newExpId
+    let oldExpId = ctx.request.body.oldExpId
+    let newCourseId = newExpId.slice(0,newExpId.lastIndexOf('-'))
+    let oldCourseId = oldExpId.slice(0,oldExpId.lastIndexOf('-'))
+    let userId = ctx.request.body.userId
+    let userName = ctx.request.body.userName
+    let belongClass = ctx.request.body.belongClass
+    const Experiment = mongoose.model('Experiment')
+    await Experiment.findOne({expId: newExpId}).then(async res => {
+        if (res) {
+            let expName = res.expName
+            let expStartTime = res.expStartTime
+            let expTime = res.expTime
+            let flag = 0;
+            for (let i = 0; i < res.expPerson.length; i++) {
+                if (res.expPerson[i].userId === userId) {
+                    flag = 1;
+                    break;
+                }
+            }
+            if (flag === 0) {
+                await Experiment.update({expId: newExpId}, {
+                    $push: {
+                        expPerson: {
+                            userId: userId,
+                            userName: userName,
+                            belongClass: belongClass
+                        }
+                    }
+                }).then(async () => {
+                    const stuExperiment = mongoose.model('stuExperiment')
+                    await stuExperiment.update({
+                        $and: [
+                            {userId: userId},
+                            {courseId: newCourseId}
+                        ]
+                    }, {
+                        $push: {
+                            exp: {
+                                expId: newExpId,
+                                expName: expName,
+                                expStartTime: expStartTime,
+                                expTime: expTime
+                            }
+                        }
+                    }, {upsert: true}).then(async () => {
+                        await Experiment.update({expId:oldExpId},{$pull:{expPerson:{userId:userId}}}).then(async res=>{
+                            const stuExperiment = mongoose.model('stuExperiment')
+                            await stuExperiment.update({userId:userId,courseId:oldCourseId},{$pull:{exp:{expId:oldExpId}}}).then(res=>{
+                                ctx.body = {
+                                    state:'success',
+                                    data:'移入成功'
+                                }
+                            }).catch(err=>{
+                                ctx.body = {
+                                    state:'error',
+                                    data:err
+                                }
+                            })
+                        }).catch(err=>{
+                            ctx.body = {
+                                state:'error',
+                                data:err
+                            }
+                        })
+                    }).catch(err => {
+                        ctx.body = {
+                            state: 'error',
+                            data: err
+                        }
+                    })
+                }).catch(err => {
+                    ctx.body = {
+                        state: 'error',
+                        data: err
+                    }
+                })
+
+            } else {
+                ctx.body = {
+                    state: 'wrong',
+                    data: '已加入该实验'
+                }
+            }
+        } else {
+            ctx.body = {
+                state: 'wrong',
+                data: '未找到该实验'
+            }
+        }
+    }).catch(err => {
+        ctx.body = {
+            state: 'error',
+            data: err
+        }
+    })
+})
 
 module.exports = router

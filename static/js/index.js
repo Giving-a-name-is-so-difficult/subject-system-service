@@ -1,4 +1,5 @@
 const domain = 'http://127.0.0.1/'
+// const domain = ' http://xiaoming.ngrok.xiaomiqiu.cn/'
 function addCookie(key, value) {
     document.cookie = key + '=' + value
 }

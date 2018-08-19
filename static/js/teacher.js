@@ -10,6 +10,10 @@ $(function () {
         delCookie('userId')
         delCookie('userName')
         delCookie('role')
+        delCookie('changeUserId')
+        delCookie('changeUserName')
+        delCookie('changeBelongClass')
+        delCookie('oldExpId')
         window.location.href = domain
     })
     //我的课堂开始
@@ -56,6 +60,7 @@ $(function () {
         let courseName = $(this).parents('tr').find('td')[1].innerHTML
         $('#course_id_title').html('课堂ID:'+courseId+' 课堂名称：'+courseName)
         $('#experiment_now tbody').empty()
+        $('.modal-body tbody').empty()
         $.ajax({
             type:'post',
             url:domain + 'teacher/getExp',
@@ -69,7 +74,9 @@ $(function () {
                             let date = new Date(msg.data[i].expStartTime)
                             let newDate = new Date()
                             let string = $('<tr> <td>'+msg.data[i].expId+'</td> <td>'+msg.data[i].expName+'</td> <td>'+msg.data[i].expPersonNum+'</td> <td>'+msg.data[i].expPerson.length+'</td> <td width="250" style="text-align: center;"> <button class="btn btn-info manage-experiment" type="submit" style="margin-right: 20px">管理实验</button> <button class="btn btn-danger del-experiment" type="submit">删除实验</button> </td> </tr>')
+                            let str = $('<tr> <td>'+msg.data[i].expId+'</td> <td>'+msg.data[i].expName+'</td> <td>'+msg.data[i].expPersonNum+'</td> <td>'+msg.data[i].expPerson.length+'</td> <td width="250" style="text-align: center;"> <button class="btn btn-info change-in" type="submit" style="margin-right: 20px">移入</button>  </tr>')
                             $('#experiment_now tbody').append(string)
+                            $('.modal-body tbody').append(str)
                         }
                     }else{
                         $('#experiment_now tbody').append('<h1>暂无实验</h1>')
@@ -136,8 +143,9 @@ $(function () {
                     $('.exp-con #con_exp_id').html('实验编号：'+msg.data.expId)
                     $('.exp-con #con_exp_person').html('课堂容量：'+msg.data.expPersonNum)
                     $('.exp-con #con_exp_num').html('已选人数：'+msg.data.expPerson.length)
+                    $('.exp-con #con_exp_time').html('实验时间：'+formatDate(msg.data.expStartTime)+'-'+msg.data.expTime)
                     for(let i=0;i<msg.data.expPerson.length;i++){
-                        let string = '<tr> <td>'+msg.data.expPerson[i].userId+'</td> <td>'+msg.data.expPerson[i].userName+'</td> <td>'+msg.data.expPerson[i].belongClass+'</td> </tr>'
+                        let string = '<tr> <td>'+msg.data.expPerson[i].userId+'</td> <td>'+msg.data.expPerson[i].userName+'</td> <td>'+msg.data.expPerson[i].belongClass+'</td> <td style="text-align: center;"><button class="btn btn-success change-group" style="width: 50px;margin-right: 10px;" data-toggle="modal" data-target="#change_group">换组</button><button class="btn btn-danger del-student" style="width: 50px;margin-right: 10px;">删除</button></td></tr>'
                         $('.exp-con tbody').append(string)
                     }
                 }else if(msg.state === 'wrong'){
@@ -152,6 +160,88 @@ $(function () {
                 $('.exp-con').removeClass('hidden')
             }
         })
+    })
+
+    $('.exp-con').delegate('.del-student','click',function () {
+        let button = $(this)
+        button.attr('disabled','disabled')
+        let row = button.parents('tr')
+        let userId = button.parents('tr').children().eq(0).html()
+        let expId = $('#con_exp_id').html().slice(5)
+        $.ajax({
+            type:'post',
+            url:domain + 'teacher/delStudentById',
+            data:{
+                "expId":expId,
+                "userId":userId
+            },
+            success:function (msg) {
+                if(msg.state === 'success'){
+                    alert(msg.data)
+                    button.removeAttr('disabled')
+                    row.remove()
+                }else if(msg.state ==='error'){
+                    alert('后台错误')
+                    console.log(msg.data);
+                    button.removeAttr('disabled')
+                }
+            },
+            error:function (err) {
+                alert('请求错误')
+                console.log(err);
+                button.removeAttr('disabled')
+            }
+        })
+    })
+    $('#change_group tbody').delegate('.change-in','click',function () {
+        let button = $(this)
+        button.attr('disabled','disabled')
+        let newExpId = button.parents('tr').children().eq(0).html()
+        $.ajax({
+            type:'post',
+            url:domain + 'teacher/changeGroup',
+            data:{
+                "newExpId" : newExpId,
+                "oldExpId" : getCookie('oldExpId'),
+                "userId" :	getCookie('changeUserId'),
+                "userName" : getCookie('changeUserName'),
+                "belongClass" : getCookie('changeBelongClass')
+            },
+            success:function (msg) {
+                if(msg.state ==='success'){
+                    alert(msg.data)
+                    button.removeAttr('disabled')
+                }else if(msg.state ==='wrong'){
+                    alert(msg.data)
+                    button.removeAttr('disabled')
+                }else if(msg.state ==='error'){
+                    alert('后台错误')
+                    console.log(msg.data);
+                    button.removeAttr('disabled')
+                }
+            },
+            error:function (err) {
+                alert('请求错误')
+                console.log(err);
+                button.removeAttr('disabled')
+            }
+        })
+        $('#change_group').modal('toggle')
+    })
+    $('.exp-con').delegate('.change-group','click',function () {
+        let button = $(this)
+        button.attr('disabled','disabled')
+        let row = button.parents('tr')
+        let userId = row.children().eq(0).html()
+        let changeUserName = row.children().eq(1).html()
+        let changeBelongClass = row.children().eq(2).html()
+        let oldExpId = $('#con_exp_id').html().slice(5)
+        addCookie('changeUserId',userId)
+        addCookie('changeUserName',changeUserName)
+        addCookie('changeBelongClass',changeBelongClass)
+        addCookie('oldExpId',oldExpId)
+        row.remove()
+        $('#change_group').modal('toggle')
     })
 
     $('#exp_manage_search').click(function () {
@@ -173,8 +263,10 @@ $(function () {
                     $('.exp-con #con_exp_id').html('实验编号：'+msg.data.expId)
                     $('.exp-con #con_exp_person').html('课堂容量：'+msg.data.expPersonNum)
                     $('.exp-con #con_exp_num').html('已选人数：'+msg.data.expPerson.length)
+                    $('.exp-con #con_exp_time').html('实验时间：'+formatDate(msg.data.expStartTime)+'-'+msg.data.expTime)
                     for(let i=0;i<msg.data.expPerson.length;i++){
-                        let string = '<tr> <td>'+msg.data.expPerson[i].userId+'</td> <td>'+msg.data.expPerson[i].userName+'</td> <td>'+msg.data.expPerson[i].belongClass+'</td> </tr>'
+                        // let string = '<tr> <td>'+msg.data.expPerson[i].userId+'</td> <td>'+msg.data.expPerson[i].userName+'</td> <td>'+msg.data.expPerson[i].belongClass+'</td> </tr>'
+                        let string = '<tr> <td>'+msg.data.expPerson[i].userId+'</td> <td>'+msg.data.expPerson[i].userName+'</td> <td>'+msg.data.expPerson[i].belongClass+'</td> <td style="text-align: center;"><button class="btn btn-success change-group" style="width: 50px;margin-right: 10px;" data-toggle="modal" data-target="#change_group">换组</button><button class="btn btn-danger del-student" style="width: 50px;margin-right: 10px;">删除</button></td></tr>'
                         $('.exp-con tbody').append(string)
                     }
                 }else if(msg.state === 'wrong'){
@@ -389,7 +481,6 @@ $(function () {
             },
             success:function (msg) {
                 if(msg.state === 'success'){
-                    console.log(msg.data);
                     let title = msg.data.expName
                     let labels = []
                     let data = []
@@ -542,7 +633,7 @@ $(function () {
     $('#launch_exp').click(function () {
         $(this).attr('disabled','disabled')
         let courseId = $('#experiment_set .all_lesson input:radio:checked').val()
-        let expTime = $('#experiment_set .exp-time input:radio:checked').val()
+        let expTime = $('#exp_time').val()
         let expName = $('#experiment_manage_name').val()
         let experiment_manage_bg_date = $('#experiment_manage_bg_date').val()
         let experiment_manage_num = $('#experiment_manage_num').val()
