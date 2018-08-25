@@ -80,6 +80,15 @@ router.post('/login', async ctx => {
                 let userName = res.userName
                 let role = res.role
                 let belongClass = res.belongClass
+                let date = new Date(Date.now())
+                let year = date.getFullYear()
+                let month = date.getMonth()+1
+                let day = date.getDate()
+                let hours = date.getHours()
+                let minutes = date.getMinutes()
+                let seconds = date.getSeconds()
+                let time = year +'-'+month+'-'+day+'  '+hours+":"+minutes+':'+seconds
+                console.log(userId+'-'+userName+"：登陆  ,时间："+time);
                 await User.updateOne({userId: userId}, {lastLoginAt: Date.now()}).then(res=>{
                     ctx.body = {
                         state: 'success',

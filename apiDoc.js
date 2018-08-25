@@ -462,11 +462,16 @@ error:
  // "sta_courseId":"100000-1"
  // "time":"2018-8-16 第二大节"
 
+ // "userId":"201603010301",
+ // "staId":"5b791db1db07f4146027f64e",
+ // "courseId":"100000-2",
+ // "days":["周一", "周二","周日"],
+ // "times":["第一大节", "第三大节"]
+
  "userId":"201603010301",
- "staId":"5b791db1db07f4146027f64e",
- "courseId":"100000-2",
- "days":["周一", "周二","周日"],
- "times":["第一大节", "第三大节"]
+ "staId":"5b80d9d44080ee34b85e4bc2",
+ "courseId":"80110621-2",
+ "times":["周一 第三大节","周二 第三大节"]
  },
  result:
  success:
@@ -477,7 +482,7 @@ error:
  wrong:
  {
  "state": "wrong",
- "data": "已参加该投票，你的选择是[周一,周二,周日]*[第一大节,第三大节]"
+ "data": "已参加该投票，你的选择是[周一 第三大节,周二 第三大节]"
  }
  {
  "state": "wrong",
@@ -587,6 +592,44 @@ error:
  data:err
  }
 * */
+
+//确认某组实验（学生将不能自行退出实验）
+/*
+ url:teacher/confirm
+ parameter:
+ {
+ "expId":"80110620-3-1"
+ },
+ result:
+ {
+ "state": "success",
+ "data": "确认成功，学生将不能自行退出该组实验"
+ }
+ error:
+ {
+ state:'error'
+ data:err
+ }
+ * */
+//取消确认某组实验
+/*
+ url:teacher/cancelConfirm
+ parameter:
+ {
+ "expId":"80110620-3-1"
+ },
+ result:
+ {
+ "state": "success",
+ "data": "取消成功，学生将可以自行退出该组实验"
+ }
+ error:
+ {
+ state:'error'
+ data:err
+ }
+ * */
+
 
 //根据实验Id查找实验
 /*
@@ -710,6 +753,10 @@ error:
  {
  "state": "success",
  "data": "删除成功"
+ }
+ {
+ "state": "wrong",
+ "data": "该组实验已经确认，如需退出请联系任课教师"
  }
  error:
  {

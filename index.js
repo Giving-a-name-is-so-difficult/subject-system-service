@@ -44,6 +44,6 @@ app.use(router.allowedMethods())
 })()
 
 
-app.listen(80, () => {
-    console.log('Server is running at port 80');
+app.listen(8080, () => {
+    console.log('Server is running at port 8080');
 })

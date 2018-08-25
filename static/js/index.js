@@ -1,5 +1,5 @@
-const domain = 'http://127.0.0.1/'
-// const domain = ' http://xiaoming.ngrok.xiaomiqiu.cn/'
+const domain = 'http://127.0.0.1:8080/'
+// const domain = ' http://subject.ngrok.xiaomiqiu.cn/'
 function addCookie(key, value) {
     document.cookie = key + '=' + value
 }

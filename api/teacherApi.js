@@ -304,6 +304,40 @@ router.post('/getExp', async ctx => {
         })
     }
 })
+
+//确认某组（学生将不能自行退出改组实验）
+router.post('/confirm',async ctx=>{
+    let expId = ctx.request.body.expId
+    const Experiment = mongoose.model('Experiment')
+    await Experiment.update({expId:expId},{confirm:true}).then(res=>{
+        ctx.body = {
+            state:'success',
+            data:"确认成功，学生将不能自行退出该组实验"
+        }
+    }).catch(err=>{
+        ctx.body = {
+            state:'error',
+            data:err
+        }
+    })
+})
+//取消确认某组
+router.post('/cancelConfirm',async ctx=>{
+    let expId = ctx.request.body.expId
+    const Experiment = mongoose.model('Experiment')
+    await Experiment.update({expId:expId},{confirm:false}).then(res=>{
+        ctx.body = {
+            state:'success',
+            data:"取消成功，学生将可以自行退出该组实验"
+        }
+    }).catch(err=>{
+        ctx.body = {
+            state:'error',
+            data:err
+        }
+    })
+})
+
 //根据实验id查找实验
 router.post('/getExpById', async ctx => {
     let expId = ctx.request.body.expId

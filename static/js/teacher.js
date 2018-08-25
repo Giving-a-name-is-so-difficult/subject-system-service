@@ -73,7 +73,18 @@ $(function () {
                         for(let i=0;i<msg.data.length;i++){
                             let date = new Date(msg.data[i].expStartTime)
                             let newDate = new Date()
-                            let string = $('<tr> <td>'+msg.data[i].expId+'</td> <td>'+msg.data[i].expName+'</td> <td>'+msg.data[i].expPersonNum+'</td> <td>'+msg.data[i].expPerson.length+'</td> <td width="250" style="text-align: center;"> <button class="btn btn-info manage-experiment" type="submit" style="margin-right: 20px">管理实验</button> <button class="btn btn-danger del-experiment" type="submit">删除实验</button> </td> </tr>')
+                            let string
+                            if(msg.data[i].confirm){
+                                string = $('<tr> <td>'+msg.data[i].expId+'</td> <td>'+msg.data[i].expName+'</td> <td>'+msg.data[i].expPersonNum+'</td> <td>'+msg.data[i].expPerson.length+'</td> ' +
+                                    '<td><button class="btn btn-danger cancel-confirm-group" type="submit" style="margin-right: 20px">取消</button></td>' +
+                                    '<td width="250" style="text-align: center;"> <button class="btn btn-info manage-experiment" type="submit" style="margin-right: 20px">管理实验</button> <button class="btn btn-danger del-experiment" type="submit">删除实验</button> </td> </tr>')
+                            }else{
+                                string = $('<tr> <td>'+msg.data[i].expId+'</td> <td>'+msg.data[i].expName+'</td> <td>'+msg.data[i].expPersonNum+'</td> <td>'+msg.data[i].expPerson.length+'</td> ' +
+                                    '<td><button class="btn btn-info confirm-group" type="submit" style="margin-right: 20px">确认</button></td>' +
+                                    '<td width="250" style="text-align: center;"> <button class="btn btn-info manage-experiment" type="submit" style="margin-right: 20px">管理实验</button> <button class="btn btn-danger del-experiment" type="submit">删除实验</button> </td> </tr>')
+                            }
+
+
                             let str = $('<tr> <td>'+msg.data[i].expId+'</td> <td>'+msg.data[i].expName+'</td> <td>'+msg.data[i].expPersonNum+'</td> <td>'+msg.data[i].expPerson.length+'</td> <td width="250" style="text-align: center;"> <button class="btn btn-info change-in" type="submit" style="margin-right: 20px">移入</button>  </tr>')
                             $('#experiment_now tbody').append(string)
                             $('.modal-body tbody').append(str)
@@ -90,6 +101,63 @@ $(function () {
             }
         })
     })
+
+    $('#experiment_now').delegate('.confirm-group','click',function () {
+        let expId = $(this).parents('tr').children().eq(0).html()
+        let button = $(this)
+        button.attr('disabled','disabled')
+        $.ajax({
+            type:'post',
+            url:domain + 'teacher/confirm',
+            data:{
+                expId:expId
+            },
+            success:function (msg) {
+                if(msg.state ==='success'){
+                    alert(msg.data)
+                    let newButton = '<button class="btn btn-danger cancel-confirm-group" type="submit" style="margin-right: 20px">取消</button>'
+                    button.replaceWith(newButton)
+                }else if(msg.state === 'error'){
+                    alert('后台错误')
+                    button.removeAttr('disabled')
+                }
+            },
+            error:function (err) {
+                alert('请求错误')
+                console.log(err);
+                button.removeAttr('disabled')
+            }
+        })
+    })
+    $('#experiment_now').delegate('.cancel-confirm-group','click',function () {
+        let expId = $(this).parents('tr').children().eq(0).html()
+        let button = $(this)
+        button.attr('disabled','disabled')
+        $.ajax({
+            type:'post',
+            url:domain + 'teacher/cancelConfirm',
+            data:{
+                expId:expId
+            },
+            success:function (msg) {
+                if(msg.state ==='success'){
+                    alert(msg.data)
+                    let newButton = '<button class="btn btn-info confirm-group" type="submit" style="margin-right: 20px">确认</button>'
+                    button.replaceWith(newButton)
+                }else if(msg.state === 'error'){
+                    alert('后台错误')
+                    button.removeAttr('disabled')
+                }
+            },
+            error:function (err) {
+                alert('请求错误')
+                console.log(err);
+                button.removeAttr('disabled')
+            }
+        })
+    })
+
+
     $('#back').click(() => {
         $('#all-course').removeClass('hidden');
         $('.course-detail').addClass('hidden')
