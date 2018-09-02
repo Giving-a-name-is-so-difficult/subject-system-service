@@ -1,11 +1,12 @@
 
-html,body{
+html, body {
     width: 100%;
     height: 100%;
     overflow: auto;
 }
+
 /*********************************登录界面*************************************/
-#mask{
+#mask {
     width: 100%;
     height: 100%;
     background: url("../imgs/bg.jpg") no-repeat -100px 0;
@@ -13,40 +14,59 @@ html,body{
     /*background-size:cover;*/
     /*filter:blur(3px);*/
     position: absolute;
+    z-index: -1;
 
 }
-.my-nav{
-    height:50px;
-    border:none;
-    border-radius:0;
-    background-color: rgba(0,0,0,0.3);
+
+.my-nav {
+    height: 50px;
+    border: none;
+    border-radius: 0;
+    background-color: rgba(0, 0, 0, 0.3);
     position: fixed;
     width: 100%;
 }
-.my-nav a{
+
+.my-nav a {
     letter-spacing: 3px;
     font-size: 20px;
     color: #ccc !important;
 }
-.container{
+
+.container {
     height: 500px;
     /*background-color: red;*/
     position: relative;
     padding-top: 100px !important;
 }
-#login-form，#register-form{
+
+#login-form，#register-form {
     padding-top: 10px;
 }
+
 /*.login-hide{*/
-    /*display: none;*/
+/*display: none;*/
 /*}*/
 /*.register-hide{*/
-    /*display:none;*/
+/*display:none;*/
 /*}*/
-#login-form .tab-header,#register-form .tab-header{
+#login-form .tab-header, #register-form .tab-header {
     margin-bottom: 15px;
 }
-#login-form .input-group,#register-form .input-group{
+
+#login-form .input-group, #register-form .input-group {
     margin-bottom: 20px;
 }
+
+.footer {
+    width: 100%;
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+    background-color: rgba(0,0,0,0.5);
+    color:white;
+    position: fixed;
+    bottom: 0;
+}
+
 /*********************************登录界面*************************************/

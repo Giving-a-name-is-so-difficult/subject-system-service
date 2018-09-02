@@ -466,6 +466,23 @@ $(function () {
 
 
     })
+    //导出到excel
+    $('#export_to_excel').click(function () {
+        // console.log($('#export_Excel tbody tr'));
+        let rows = $('#export_excel tbody tr')
+        let table = $('#export_excel_hidden tbody')
+        table.empty()
+        for(let i=0;i<rows.length;i++){
+            let colums = rows.eq(i).find('td')
+            let str = '<tr><td>'+colums.eq(0).html()+'_</td><td>'+colums.eq(1).html()+'</td><td>'+colums.eq(2).html()+'</td><td>   </td></tr>'
+            table.append(str)
+        }
+        excel = new ExcelGen({
+            "src_id": "export_excel_hidden",
+            "show_header": true
+        });
+        excel.generate();
+    })
     //管理实验结束
 
     $('#search_student').click(() => {
