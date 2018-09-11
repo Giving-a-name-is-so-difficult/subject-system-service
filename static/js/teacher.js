@@ -424,7 +424,7 @@ $(function () {
                     $('#add_student').removeAttr('disabled')
                 }else{
                     alert(msg.data)
-                    let str = '<tr> <td>'+userId+'</td> <td>'+name+'</td> <td>'+belongClass+'</td> </tr>'
+                    let str = '<tr> <td>'+userId+'</td> <td>'+name+'</td> <td>'+belongClass+'</td><td style="text-align: center;"><button class="btn btn-success change-group" style="width: 50px;margin-right: 10px;" data-toggle="modal" data-target="#change_group">换组</button><button class="btn btn-danger del-student" style="width: 50px;margin-right: 10px;">删除</button></td> </tr>'
                     $('.exp-con tbody').append(str)
                     $('#add_student').removeAttr('disabled')
                 }
@@ -724,11 +724,11 @@ $(function () {
         let experiment_manage_num = $('#experiment_manage_num').val()
         let teacherId = getCookie('userId')
         let teacherName = getCookie('userName')
-        console.log(courseId);
-        console.log(expTime);
-        console.log(expName);
-        console.log(experiment_manage_bg_date);
-        console.log(experiment_manage_num);
+        // console.log(courseId);
+        // console.log(expTime);
+        // console.log(expName);
+        // console.log(experiment_manage_bg_date);
+        // console.log(experiment_manage_num);
         if(courseId === ''||courseId === undefined || expTime === ''||expTime === undefined || expName === '' || experiment_manage_bg_date === '' || experiment_manage_num === ''){
             alert('请输入完整信息')
             $('#launch_exp').removeAttr('disabled')
