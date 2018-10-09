@@ -1,5 +1,6 @@
 const domain = 'http://127.0.0.1:8080/'
 // const domain = ' http://subject.ngrok.xiaomiqiu.cn/'
+// const domain = ' http://59.67.228.242/'
 function addCookie(key, value) {
     document.cookie = key + '=' + value
 }
@@ -25,4 +26,18 @@ function formatDate(str) {
     let time = year +'-'+month+'-'+day
     return time
 }
+//底部版权信息处理
+function copyRightUpdate() {
+    let date = new Date()
+    let year = date.getFullYear()
+    if (year === 2018){
+        let string  = '&copy;2018 焦乾明 版权所有 指导教师：王雪'
+        $('.footer').html(string)
+    }else{
+        let string  = '&copy;2018-'+year+' 焦乾明 版权所有 指导教师：王雪'
+        $('.footer').html(string)
+    }
+
+}
+copyRightUpdate()
 

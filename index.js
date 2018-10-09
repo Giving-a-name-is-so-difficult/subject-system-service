@@ -25,7 +25,6 @@ let home = require('./api/home.js')
 let studentApi = require('./api/studentApi')
 let teacherApi = require('./api/teacherApi')
 let registerAndLogin = require('./api/registerAndLogin.js')
-let test = require('./api/test.js')
 
 router.use('/student', studentApi.routes())
 router.use('/teacher', teacherApi.routes())

@@ -48,6 +48,7 @@ $(function () {
                 alert('请求错误')
             }
         })
+        $('#back').trigger('click')
     })
     $('#my_course_title').trigger('click')
     //我的课堂结束
@@ -193,6 +194,9 @@ $(function () {
     //我的课堂管理课堂结束
 
     //管理实验开始
+    $('#experiment_manage_title').click(function () {
+        $('.exp-con').addClass('hidden')
+    })
     $('#experiment_now').delegate('.manage-experiment','click',function () {
         $('.teacher-tab a').eq(3).tab('show')
         // $('.exp-con').removeClass('hidden')
@@ -351,7 +355,7 @@ $(function () {
         })
         return false
     })
-    
+
     $('#search_student').click(function () {
         $(this).attr('disabled','disabled')
         let userId = $('#stu_id').val()
@@ -516,6 +520,12 @@ $(function () {
                 alert('请求错误')
             }
         })
+        $('#all_course_statistics').removeClass('hidden')
+        $('.launch-detail').addClass('hidden')
+        $('.sta-result').addClass('hidden')
+        $('.sta-result-painting').addClass('hidden')
+        // $('.launch-result-back').trigger('click')
+        // $('.launch-result-painting-back').trigger('click')
     })
     $('#all_course_statistics tbody').delegate('.launch','click',function () {
         let courseId = $(this).parents('tr').children('td')[0].innerHTML;
@@ -569,6 +579,36 @@ $(function () {
                     let title = msg.data.expName
                     let labels = []
                     let data = []
+                    let NumChar = {
+                        一:1,
+                        二:2,
+                        三:3,
+                        四:4,
+                        五:5,
+                        六:6,
+                        日:7
+                    }
+                    for(let i=0;i<msg.data.staResult.length;i++){
+                        msg.data.staResult[i].weekday = NumChar[msg.data.staResult[i].time[1]]
+                        msg.data.staResult[i].classNum = NumChar[msg.data.staResult[i].time[4]]
+
+                    }
+
+                    function multisort(array, ...compairers) {
+                        return array.sort((a, b) => {
+                            for (const c of compairers) {
+                                const r = c(a, b);
+                                if (r !== 0) {
+                                    return r;
+                                }
+                            }
+                        });
+                    }
+                    multisort(msg.data.staResult,
+                        (a, b) => a.weekday - b.weekday,
+                        (a, b) => a.classNum - b.classNum
+                    );
+
                     for(let i=0;i<msg.data.staResult.length;i++){
                         labels.push(msg.data.staResult[i].time)
                         data.push(msg.data.staResult[i].num)
@@ -585,8 +625,8 @@ $(function () {
                                 "label": title,
                                 "data": data,
                                 "fill": false,
-                                "backgroundColor": ["rgba(255, 99, 132, 0.2)", "rgba(255, 159, 64, 0.2)", "rgba(255, 205, 86, 0.2)", "rgba(75, 192, 192, 0.2)", "rgba(54, 162, 235, 0.2)", "rgba(153, 102, 255, 0.2)", "rgba(201, 203, 207, 0.2)"],
-                                "borderColor": ["rgb(255, 99, 132)", "rgb(255, 159, 64)", "rgb(255, 205, 86)", "rgb(75, 192, 192)", "rgb(54, 162, 235)", "rgb(153, 102, 255)", "rgb(201, 203, 207)"],
+                                "backgroundColor": ["rgba(255, 99, 132, 0.2)", "rgba(255, 159, 64, 0.2)", "rgba(255, 205, 86, 0.2)", "rgba(75, 192, 192, 0.2)", "rgba(54, 162, 235, 0.2)", "rgba(153, 102, 255, 0.2)"],
+                                "borderColor": ["rgb(255, 99, 132)", "rgb(255, 159, 64)", "rgb(255, 205, 86)", "rgb(75, 192, 192)", "rgb(54, 162, 235)", "rgb(153, 102, 255)"],
                                 "borderWidth": 1
                             }]
                         },
@@ -715,6 +755,29 @@ $(function () {
     //课堂设置结束
 
     //实验设置开始
+    $('#experiment_set_title').click(function () {
+        $.ajax({
+            type: "post",
+            url: domain + 'teacher/getCourseByTeacherId',
+            data: {
+                "courseTeacherId": getCookie('userId')
+            },
+            success: function (msg) {
+                if (msg.state === 'success') {
+                    $('.all_lesson').empty()
+                        for (let i = 0; i < msg.data.length; i++) {
+                            let string2 = '<div class="radio"> <label> <input type="radio" name="lesson" value="'+msg.data[i].courseId+'">'+msg.data[i].courseName+'</label> </div>'
+                            $('.all_lesson').append(string2)
+                        }
+                }else{
+                    alert(msg.data)
+                }
+            },
+            error: function (err) {
+                alert('请求错误')
+            }
+        })
+    })
     $('#launch_exp').click(function () {
         $(this).attr('disabled','disabled')
         let courseId = $('#experiment_set .all_lesson input:radio:checked').val()
@@ -765,5 +828,5 @@ $(function () {
     })
     //实验设置结束
 
-    
+
 })

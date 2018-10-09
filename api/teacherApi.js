@@ -63,11 +63,13 @@ router.post('/getCourseByTeacherId', async ctx => {
 router.post('/delCourse',async ctx=>{
     let courseId = ctx.request.body.courseId
     const Course = mongoose.model('Course')
+
     await Course.deleteOne({courseId:courseId}).then(async res=>{
         const stuCourse = mongoose.model('stuCourse')
         await stuCourse.update(
             {},
-            {$pull:{selectCourse:{courseId:courseId}}}
+            {$pull:{selectCourse:{courseId:courseId}}},
+            {multi:true}
         ).then(async res =>{
             const Experiment = mongoose.model('Experiment')
             await Experiment.deleteMany({courseId:courseId}).then(async res=>{

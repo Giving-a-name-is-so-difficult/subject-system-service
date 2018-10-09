@@ -49,6 +49,7 @@ $(function () {
                 console.log(err);
             }
         })
+        $('#back').trigger('click')
     })
     $('#my_course_title').trigger('click')
 
@@ -161,6 +162,7 @@ $(function () {
                 console.log(err);
             }
         })
+        $('#sta_detail_back').trigger('click')
     })
     $('#all_course_statistics').delegate('.look', 'click', function () {
         $('#all_course_statistics').addClass('hidden')
@@ -412,6 +414,7 @@ $(function () {
                 console.log(err);
             }
         })
+        $('#exp_select_info_back').trigger('click')
     })
 
     $('#select_class_info').delegate('.look-exp', 'click', function () {
