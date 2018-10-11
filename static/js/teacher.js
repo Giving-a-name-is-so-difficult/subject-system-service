@@ -765,10 +765,10 @@ $(function () {
             success: function (msg) {
                 if (msg.state === 'success') {
                     $('.all_lesson').empty()
-                        for (let i = 0; i < msg.data.length; i++) {
-                            let string2 = '<div class="radio"> <label> <input type="radio" name="lesson" value="'+msg.data[i].courseId+'">'+msg.data[i].courseName+'</label> </div>'
-                            $('.all_lesson').append(string2)
-                        }
+                    for (let i = 0; i < msg.data.length; i++) {
+                        let string2 = '<div class="radio"> <label> <input type="radio" name="lesson" value="'+msg.data[i].courseId+'">'+msg.data[i].courseName+'</label> </div>'
+                        $('.all_lesson').append(string2)
+                    }
                 }else{
                     alert(msg.data)
                 }

@@ -2,7 +2,46 @@
 const Router = require('koa-router')
 const mongoose = require('mongoose')
 
+const fs = require('fs');
+
 let router = new Router()
+
+let options = {
+    flags: 'a',     // append模式
+    encoding: 'utf8',  // utf8编码
+};
+
+let stdout = fs.createWriteStream('./Login.log', options);
+
+// 创建logger
+let logger = new console.Console(stdout);
+// 添加format方法
+Date.prototype.format = function (format) {
+
+    if (!format) {
+        format = 'yyyy-MM-dd HH:mm:ss';
+    }
+
+    // 用0补齐指定位数
+    let padNum = function (value, digits) {
+        return Array(digits - value.toString().length + 1).join('0') + value;
+    };
+
+    // 指定格式字符
+    let cfg = {
+        yyyy: this.getFullYear(),             // 年
+        MM: padNum(this.getMonth() + 1, 2),        // 月
+        dd: padNum(this.getDate(), 2),           // 日
+        HH: padNum(this.getHours(), 2),          // 时
+        mm: padNum(this.getMinutes(), 2),         // 分
+        ss: padNum(this.getSeconds(), 2),         // 秒
+        fff: padNum(this.getMilliseconds(), 3),      // 毫秒
+    };
+
+    return format.replace(/([a-z]|[A-Z])(\1)*/ig, function (m) {
+        return cfg[m];
+    });
+}
 
 //注册
 router.post('/register', async ctx => {
@@ -89,7 +128,10 @@ router.post('/login', async ctx => {
                 let seconds = date.getSeconds()
                 let time = year +'-'+month+'-'+day+'  '+hours+":"+minutes+':'+seconds
                 console.log(userId+'-'+userName+"：登陆  ,时间："+time);
+
                 await User.updateOne({userId: userId}, {lastLoginAt: Date.now()}).then(res=>{
+                    let time = new Date().format('yyyy-MM-dd HH:mm:ss.fff');
+                    logger.log(`[${time}] --- ID:${userId} ${userName}`);
                     ctx.body = {
                         state: 'success',
                         data:{

@@ -1,1 +1,4 @@
 node_modules/
+static/js/es5/
+static/js/es6/
+Login.log
