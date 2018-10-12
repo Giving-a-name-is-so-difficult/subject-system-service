@@ -205,7 +205,34 @@ $(function () {
 
     $('#statistics_info').delegate('.vote', 'click', function () {
         let _id = $(this).data('id')
+        $('.student-modal-body').empty()
+        let $node = $(` <form class="form-inline select-modal" style="margin-bottom: 10px;">
+                    <select class="form-control">
+                        <option>周一</option>
+                        <option>周二</option>
+                        <option>周三</option>
+                        <option>周四</option>
+                        <option>周五</option>
+                        <option>周六</option>
+                        <option>周日</option>
+                    </select>-
+                    <select class="form-control">
+                        <option>第一大节</option>
+                        <option>第二大节</option>
+                        <option>第三大节</option>
+                        <option>第四大节</option>
+                        <option>第五大节</option>
+                        <option>上午</option>
+                        <option>下午</option>
+                    </select>
+                    <button class="btn btn-danger modal-del">删除</button>
+                </form>`)
+        $('.student-modal-body').append($node)
         addCookie('_id', _id)
+    })
+    $('.modal-dialog').delegate('.modal-del','click',function () {
+        $(this).parents('form').remove()
+        return false
     })
 
     $('#model_submit').click(function () {
@@ -216,7 +243,6 @@ $(function () {
             sets.push(time)
         }
         let times = Array.from(new Set(sets))
-
         $(this).attr('disabled', 'disabled')
         $.ajax({
             type: 'post',
@@ -286,7 +312,7 @@ $(function () {
         // }
     })
     $('.add-row').click(function () {
-        let form = '<form class="form-inline select-modal" style="margin-bottom: 10px;"> <select class="form-control"> <option>周一</option> <option>周二</option> <option>周三</option> <option>周四</option> <option>周五</option> <option>周六</option> <option>周日</option> </select>- <select class="form-control"> <option>第一大节</option> <option>第二大节</option> <option>第三大节</option> <option>第四大节</option> <option>第五大节</option> </select> </form>'
+        let form = '<form class="form-inline select-modal" style="margin-bottom: 10px;"><select class="form-control"> <option>周一</option> <option>周二</option> <option>周三</option> <option>周四</option> <option>周五</option> <option>周六</option> <option>周日</option> </select>- <select class="form-control"> <option>第一大节</option> <option>第二大节</option> <option>第三大节</option> <option>第四大节</option> <option>第五大节</option> <option>上午</option> <option>下午</option></select>    <button class="btn btn-danger modal-del">删除</button></form>'
         $('.student-modal-body').append(form)
     })
     //参与统计结束
