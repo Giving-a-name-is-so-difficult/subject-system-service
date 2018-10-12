@@ -34,7 +34,7 @@ $(function () {
                     } else {
                         for (let i = 0; i < msg.data.length; i++) {
                             let string = '<tr><td>'+msg.data[i].courseId+'</td><td>'+msg.data[i].courseName+'</td><td>'+msg.data[i].coursePersonNum+'</td><td width="250" style="text-align: center;"> <button class="btn btn-info manage-course" type="submit" style="margin-right: 20px" data-id='+msg.data[i].courseId+'>管理课堂</button> <button class="btn btn-danger del-course" type="submit">删除课堂</button> </td> </tr>'
-                            $node = $(string)
+                            let $node = $(string)
                             $('#all-course tbody').append($node)
                             let string2 = '<div class="radio"> <label> <input type="radio" name="lesson" value="'+msg.data[i].courseId+'">'+msg.data[i].courseName+'</label> </div>'
                             $('.all_lesson').append(string2)
@@ -507,8 +507,8 @@ $(function () {
                         $('#all_course_statistics tbody').append('<h3>暂无数据</h3>')
                     } else {
                         for (let i = 0; i < msg.data.length; i++) {
-                            let string = '<tr> <td>'+msg.data[i].courseId+'</td> <td>'+msg.data[i].courseName+'</td> <td>'+msg.data[i].coursePersonNum+'</td> <td width="250" style="text-align: center;"> <button class="btn btn-info launch" type="submit" style="margin-right: 20px">发起统计</button> <button class="btn btn-danger query" type="submit">查看统计</button> </td> </tr>'
-                            $node = $(string)
+                            let string = '<tr> <td>'+msg.data[i].courseId+'</td> <td>'+msg.data[i].courseName+'</td> <td>'+msg.data[i].coursePersonNum+'</td> <td width="250" style="text-align: center;"> <button class="btn btn-success launch" type="submit" style="margin-right: 20px">发起统计</button> <button class="btn btn-info query" type="submit">查看统计</button></td> </tr>'
+                            let $node = $(string)
                             $('#all_course_statistics tbody').append($node)
                         }
                     }
@@ -550,7 +550,7 @@ $(function () {
                         $('.launch-result-back').trigger('click')
                     }else{
                         for(let i=0;i<msg.data.length;i++){
-                            let str = '<tr> <td>'+msg.data[i].expName+'</td> <td>'+formatDate(msg.data[i].expStartTime)+'</td> <td>'+formatDate(msg.data[i].expEndTime)+'</td> <td width="250" style="text-align: center;"> <button class="btn btn-danger query-sta" type="submit" data-id="'+msg.data[i]._id+'">查看结果</button> </td> </tr>'
+                            let str = '<tr> <td>'+msg.data[i].expName+'</td> <td>'+formatDate(msg.data[i].expStartTime)+'</td> <td>'+formatDate(msg.data[i].expEndTime)+'</td> <td width="250" style="text-align: center;"> <button class="btn btn-info query-sta" type="submit" data-id="'+msg.data[i]._id+'">查看结果</button>  <button class="btn btn-danger delSta" type="submit" style="margin-right: 20px" data-id="'+msg.data[i]._id+'">删除统计</button></td> </tr>'
                             $('#sta_result tbody').append(str)
                         }
                         $('.sta-result').removeClass('hidden')
@@ -646,6 +646,34 @@ $(function () {
                 alert('请求错误')
                 console.log(err);
                 $('.launch-result-painting-back').trigger('click')
+            }
+        })
+    })
+    $('#sta_result').delegate('.delSta','click',function () {
+        let button = $(this)
+        let row = button.parents('tr')
+        button.addClass("disabled")
+        let staId = $(this).data('id')
+        $.ajax({
+            type:'post',
+            url:domain + 'teacher/delStatistic',
+            data:{
+                "staId":staId
+            },
+            success:function (msg) {
+                if(msg.state ==="success"){
+                    alert(msg.data)
+                    row.remove()
+                }else if(msg.state === "wrong"){
+                    alert(msg.data)
+                    button.removeClass('disabled')
+                }else{
+                    alert(msg.data)
+                }
+            },
+            error:function (err) {
+                alert('请求错误')
+                console.log(err);
             }
         })
     })

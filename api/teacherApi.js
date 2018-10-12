@@ -187,6 +187,49 @@ router.post('/getStatisticByStaId', async ctx => {
         }
     })
 })
+//删除统计
+router.post('/delStatistic',async ctx=>{
+    const Statistic = mongoose.model('Statistic')
+    let staId = ctx.request.body.staId
+    await Statistic.findOne({_id:staId}).then(async res=>{
+        if(res){
+            await Statistic.deleteOne({_id:staId}).then(async res=>{
+                const stuStatistic = mongoose.model('stuStatistic')
+                await stuStatistic.deleteMany({staId:staId}).then(res=>{
+                    ctx.body = {
+                        state:'success',
+                        data:'删除成功'
+                    }
+                }).catch(err=>{
+                    console.log(err);
+                    ctx.body = {
+                        state:'error',
+                        data:err
+                    }
+                })
+            }).catch(err=>{
+                console.log(err);
+                ctx.body = {
+                    state:'error',
+                    data:err
+                }
+            })
+        }else{
+            ctx.body = {
+                state:"wrong",
+                data:"未找到该统计"
+            }
+        }
+    }).catch(err=>{
+        console.log(err);
+        ctx.body = {
+            state:'error',
+            data:err
+        }
+    })
+})
+
+
 
 //设置实验
 router.post('/setExp', async ctx => {

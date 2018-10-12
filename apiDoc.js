@@ -314,6 +314,30 @@ error:
  }
 * */
 
+//删除统计
+/*url:teacher/delStatistic
+ parameter:
+ {
+    "staId":"******"
+ },
+ result:
+ success:
+ {
+ "state": "success",
+ "data": "删除成功"
+ }
+ wrong:
+ {
+ "state":"wrong",
+ "data":"未找到该统计"
+ }
+ error:
+ {
+ state:'error'
+ data:err
+ }
+ * */
+
 //查找统计
 /*
      url:teacher/getStatistic
