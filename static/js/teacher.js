@@ -589,9 +589,16 @@ $(function () {
                         日:7
                     }
                     for(let i=0;i<msg.data.staResult.length;i++){
-                        msg.data.staResult[i].weekday = NumChar[msg.data.staResult[i].time[1]]
-                        msg.data.staResult[i].classNum = NumChar[msg.data.staResult[i].time[4]]
-
+                        if(msg.data.staResult[i].time[3] === '上'){
+                            msg.data.staResult[i].weekday = NumChar[msg.data.staResult[i].time[1]]
+                            msg.data.staResult[i].classNum = 6
+                        }else if(msg.data.staResult[i].time[3] === '下'){
+                            msg.data.staResult[i].weekday = NumChar[msg.data.staResult[i].time[1]]
+                            msg.data.staResult[i].classNum = 7
+                        } else{
+                            msg.data.staResult[i].weekday = NumChar[msg.data.staResult[i].time[1]]
+                            msg.data.staResult[i].classNum = NumChar[msg.data.staResult[i].time[4]]
+                        }
                     }
 
                     function multisort(array, ...compairers) {
