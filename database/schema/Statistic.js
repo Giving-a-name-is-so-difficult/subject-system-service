@@ -10,6 +10,7 @@ const staSchema = new Schema({
     courseId:String,
     teacherId:String,
     teacherName:String,
+    mode:String,
     staResult: [
         {
             time:String,

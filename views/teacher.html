@@ -180,8 +180,25 @@
                                     <input type="date" class="form-control" id="bg_date" placeholder="请输入实验开始日期">
                                 </div>
                                 <div class="form-group">
-                                    <label for="bg_date">实验结束日期</label>
-                                    <input type="date" class="form-control" placeholder="请输入实验开始日期">
+                                    <label for="end_date">实验结束日期</label>
+                                    <input type="date" class="form-control" id="end_date" placeholder="请输入实验开始日期">
+                                </div>
+                                <div class="form-group">
+                                    <label>投票方式</label>
+                                    <div class="radio" id="vote_mode">
+                                    <label>
+                                        <input type="radio" name="mode" value="voteByAllMethod" checked>
+                                        全部方式
+                                    </label>
+                                        <label>
+                                            <input type="radio" name="mode" value="voteByClass">
+                                            根据第几大节投票
+                                        </label>
+                                        <label>
+                                            <input type="radio" name="mode" value="voteByDay">
+                                            根据上下午投票
+                                        </label>
+                                    </div>
                                 </div>
                             </form>
                         <div style="text-align: center;">

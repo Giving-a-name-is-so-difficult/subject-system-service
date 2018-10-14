@@ -701,20 +701,13 @@ $(function () {
         let expName = forms.eq(0).val()
         let expStartTime = forms.eq(1).val()
         let expEndTime = forms.eq(2).val()
+        let mode = $("#vote_mode input:checked").val()
         let courseId = getCookie('courseId')
         let teacherId = getCookie('userId')
         let teacherName = getCookie('userName')
-
         if(expName === ''|| expStartTime === '' || expEndTime === ''){
             alert('请输入完整的信息')
         }else{
-            // console.log(expName);
-            // console.log(staDuration);
-            // console.log(expStartTime);
-            // console.log(expEndTime);
-            // console.log(courseId);
-            // console.log(teacherId);
-            // console.log(teacherName);
             $.ajax({
                 type:'post',
                 url: domain + 'teacher/setStatistic',
@@ -724,7 +717,8 @@ $(function () {
                     "expEndTime" : expEndTime,
                     "courseId" :courseId,
                     "teacherId" : teacherId,
-                    "teacherName" : teacherName
+                    "teacherName" : teacherName,
+                    "mode":mode
                 },
                 success:function (msg) {
                     if(msg.state === 'success'){

@@ -299,7 +299,8 @@ error:
  "expEndTime" : String,
  "courseId" :String,
  "teacherId" : String,
- "teacherName" : String
+ "teacherName" : String,
+ "mode":String
  },
  result:
  success:

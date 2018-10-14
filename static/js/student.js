@@ -210,7 +210,7 @@ $(function () {
                                             let str = '<tr> <td>' + allSta[i].expName + '</td> <td>' + begin + ' 至 ' + end + '</td> <td width="250" style="text-align: center;"><button type="button" class="btn btn-success vote disabled">已投票 </button> </td> </tr>'
                                             $('#statistics_info tbody').append(str)
                                         }else{
-                                            let str = '<tr> <td>' + allSta[i].expName + '</td> <td>' + begin + ' 至 ' + end + '</td> <td width="250" style="text-align: center;"><button type="button" class="btn btn-success vote" data-toggle="modal" data-target="#myModal" data-id="' + allSta[i]._id + '">投票 </button> </td> </tr>'
+                                            let str = '<tr> <td>' + allSta[i].expName + '</td> <td>' + begin + ' 至 ' + end + '</td> <td width="250" style="text-align: center;"><button type="button" class="btn btn-success vote" data-toggle="modal" data-target="#myModal" data-id="' + allSta[i]._id + '" data-votemode="' + allSta[i].mode + '">投票 </button> </td> </tr>'
                                             $('#statistics_info tbody').append(str)
                                         }
                                     }
@@ -241,9 +241,50 @@ $(function () {
 
     $('#statistics_info').delegate('.vote', 'click', function () {
         let _id = $(this).data('id')
+        let voteMode = $(this).data('votemode')
         window.voteButton = $(this)
         $('.student-modal-body').empty()
-        let $node = $(` <form class="form-inline select-modal" style="margin-bottom: 10px;">
+        if(voteMode === "voteByClass"){
+            let $node = $(` <form class="form-inline select-modal" style="margin-bottom: 10px;">
+                    <select class="form-control">
+                        <option>周一</option>
+                        <option>周二</option>
+                        <option>周三</option>
+                        <option>周四</option>
+                        <option>周五</option>
+                        <option>周六</option>
+                        <option>周日</option>
+                    </select>-
+                    <select class="form-control">
+                        <option>第一大节</option>
+                        <option>第二大节</option>
+                        <option>第三大节</option>
+                        <option>第四大节</option>
+                        <option>第五大节</option>
+                    </select>
+                    <button class="btn btn-danger modal-del">删除</button>
+                </form>`)
+            $('.student-modal-body').append($node)
+        }else if(voteMode === "voteByDay"){
+            let $node = $(` <form class="form-inline select-modal" style="margin-bottom: 10px;">
+                    <select class="form-control">
+                        <option>周一</option>
+                        <option>周二</option>
+                        <option>周三</option>
+                        <option>周四</option>
+                        <option>周五</option>
+                        <option>周六</option>
+                        <option>周日</option>
+                    </select>-
+                    <select class="form-control">
+                        <option>上午</option>
+                        <option>下午</option>
+                    </select>
+                    <button class="btn btn-danger modal-del">删除</button>
+                </form>`)
+            $('.student-modal-body').append($node)
+        }else{
+            let $node = $(` <form class="form-inline select-modal" style="margin-bottom: 10px;">
                     <select class="form-control">
                         <option>周一</option>
                         <option>周二</option>
@@ -264,8 +305,10 @@ $(function () {
                     </select>
                     <button class="btn btn-danger modal-del">删除</button>
                 </form>`)
-        $('.student-modal-body').append($node)
+            $('.student-modal-body').append($node)
+        }
         addCookie('_id', _id)
+        addCookie('voteMode', voteMode)
     })
     $('.modal-dialog').delegate('.modal-del','click',function () {
         $(this).parents('form').remove()
@@ -354,8 +397,17 @@ $(function () {
         // }
     })
     $('.add-row').click(function () {
-        let form = '<form class="form-inline select-modal" style="margin-bottom: 10px;"><select class="form-control"> <option>周一</option> <option>周二</option> <option>周三</option> <option>周四</option> <option>周五</option> <option>周六</option> <option>周日</option> </select>- <select class="form-control"> <option>第一大节</option> <option>第二大节</option> <option>第三大节</option> <option>第四大节</option> <option>第五大节</option> <option>上午</option> <option>下午</option></select>    <button class="btn btn-danger modal-del">删除</button></form>'
-        $('.student-modal-body').append(form)
+        let voteMode = getCookie("voteMode")
+        if(voteMode === "voteByDay"){
+            let form = '<form class="form-inline select-modal" style="margin-bottom: 10px;"><select class="form-control"> <option>周一</option> <option>周二</option> <option>周三</option> <option>周四</option> <option>周五</option> <option>周六</option> <option>周日</option> </select>- <select class="form-control">  <option>上午</option> <option>下午</option></select>    <button class="btn btn-danger modal-del">删除</button></form>'
+            $('.student-modal-body').append(form)
+        }else if(voteMode === "voteByClass"){
+            let form = '<form class="form-inline select-modal" style="margin-bottom: 10px;"><select class="form-control"> <option>周一</option> <option>周二</option> <option>周三</option> <option>周四</option> <option>周五</option> <option>周六</option> <option>周日</option> </select>- <select class="form-control"> <option>第一大节</option> <option>第二大节</option> <option>第三大节</option> <option>第四大节</option> <option>第五大节</option></select>    <button class="btn btn-danger modal-del">删除</button></form>'
+            $('.student-modal-body').append(form)
+        }else{
+            let form = '<form class="form-inline select-modal" style="margin-bottom: 10px;"><select class="form-control"> <option>周一</option> <option>周二</option> <option>周三</option> <option>周四</option> <option>周五</option> <option>周六</option> <option>周日</option> </select>- <select class="form-control"> <option>第一大节</option> <option>第二大节</option> <option>第三大节</option> <option>第四大节</option> <option>第五大节</option> <option>上午</option> <option>下午</option></select>    <button class="btn btn-danger modal-del">删除</button></form>'
+            $('.student-modal-body').append(form)
+        }
     })
     //参与统计结束
 
