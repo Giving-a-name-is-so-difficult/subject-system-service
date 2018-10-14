@@ -185,13 +185,49 @@ $(function () {
                         alert('暂无统计')
                         $('#sta_detail_back').trigger('click')
                     } else {
-                        for (let i = 0; i < msg.data.length; i++) {
-                            let begin = formatDate(msg.data[i].expStartTime)
-                            let end = formatDate(msg.data[i].expEndTime)
-                            let str = '<tr> <td>' + msg.data[i].expName + '</td> <td>' + begin + ' 至 ' + end + '</td> <td width="250" style="text-align: center;"><button type="button" class="btn btn-success vote" data-toggle="modal" data-target="#myModal" data-id="' + msg.data[i]._id + '">投票 </button> </td> </tr>'
-                            $('#statistics_info tbody').append(str)
-                        }
-                        $('#sta_detail').removeClass('hidden')
+                        let allSta = msg.data
+                        $.ajax({
+                            type:"post",
+                            url: domain + 'student/getStuSta',
+                            data: {
+                                "userId":getCookie("userId"),
+                                "courseId":courseId
+                            },
+                            success:function (msg) {
+                                if(msg.state === 'success'){
+                                    let selectedSta = msg.data
+                                    for(let i=0;i<selectedSta.length;i++){
+                                        for(let j=0;j<allSta.length;j++){
+                                            if(allSta[j]._id === selectedSta[i].staId){
+                                                allSta[j].isSelected = true
+                                            }
+                                        }
+                                    }
+                                    for (let i = 0; i < allSta.length; i++) {
+                                        let begin = formatDate(allSta[i].expStartTime)
+                                        let end = formatDate(allSta[i].expEndTime)
+                                        if(allSta[i].isSelected){
+                                            let str = '<tr> <td>' + allSta[i].expName + '</td> <td>' + begin + ' 至 ' + end + '</td> <td width="250" style="text-align: center;"><button type="button" class="btn btn-success vote disabled">已投票 </button> </td> </tr>'
+                                            $('#statistics_info tbody').append(str)
+                                        }else{
+                                            let str = '<tr> <td>' + allSta[i].expName + '</td> <td>' + begin + ' 至 ' + end + '</td> <td width="250" style="text-align: center;"><button type="button" class="btn btn-success vote" data-toggle="modal" data-target="#myModal" data-id="' + allSta[i]._id + '">投票 </button> </td> </tr>'
+                                            $('#statistics_info tbody').append(str)
+                                        }
+                                    }
+                                    $('#sta_detail').removeClass('hidden')
+
+                                }else{
+                                    alert('后台错误')
+                                    console.log(msg.data);
+                                    $('#sta_detail_back').trigger('click')
+                                }
+                            },
+                            error:function (err) {
+                                alert('请求错误')
+                                console.log(err);
+                                $('#sta_detail_back').trigger('click')
+                            }
+                        })
                     }
                 }
             },
@@ -205,6 +241,7 @@ $(function () {
 
     $('#statistics_info').delegate('.vote', 'click', function () {
         let _id = $(this).data('id')
+        window.voteButton = $(this)
         $('.student-modal-body').empty()
         let $node = $(` <form class="form-inline select-modal" style="margin-bottom: 10px;">
                     <select class="form-control">
@@ -243,7 +280,8 @@ $(function () {
             sets.push(time)
         }
         let times = Array.from(new Set(sets))
-        $(this).attr('disabled', 'disabled')
+        let button = $(this)
+        button.attr('disabled', 'disabled')
         $.ajax({
             type: 'post',
             url: domain + 'student/vote',
@@ -259,6 +297,10 @@ $(function () {
                     console.log(msg.data);
                 } else {
                     alert(msg.data)
+                    $('#myModal').modal('hide')
+                    voteButton.html('已投票')
+                    voteButton.attr('disabled','disabled')
+                    window.voteButton = null
                 }
                 $('#model_submit').removeAttr('disabled')
             },

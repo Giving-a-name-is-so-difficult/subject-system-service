@@ -371,6 +371,24 @@ router.post('/getExpByUserIdAndCourseId', async ctx => {
     })
 })
 
+//查找学生某课程已经投票的统计
+router.post('/getStuSta',async ctx =>{
+    let userId = ctx.request.body.userId
+    let courseId = ctx.request.body.courseId
+    const stuStatistic = mongoose.model('stuStatistic')
+    await stuStatistic.find({userId:userId,courseId:courseId}).then(res=>{
+            ctx.body = {
+                state:"success",
+                data:res
+            }
+    }).catch(err=>{
+        console.log(err);
+        ctx.body = {
+            state:"error",
+            data:err
+        }
+    })
+})
 
 //投票
 router.post('/vote', async ctx => {

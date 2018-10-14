@@ -477,6 +477,55 @@ error:
  }
  * */
 
+//查找学生某课程已经投票的统计
+/*url:student/getStuSta
+ parameter:
+ {//示例
+ {
+ "userId":"201603010309",
+ "courseId":"100000-1"
+ }
+ },
+ result:
+ success:
+ {
+ "state": "success",
+ "data": {
+ "state": "success",
+ "data": [
+ {
+ "times": [
+ "周三 第三大节",
+ "周三 第四大节",
+ "周一 第一大节"
+ ],
+ "_id": "5bbc7c1ca1d6ac2828cdab21",
+ "userId": "201603010309",
+ "staId": "5bbc7b94a1d6ac2828cdab1b",
+ "courseId": "100000-1",
+ "__v": 0
+ },
+ {
+ "times": [
+ "周一 第三大节",
+ "周四 第四大节",
+ "周二 第二大节"
+ ],
+ "_id": "5bbc7c32a1d6ac2828cdab25",
+ "userId": "201603010309",
+ "staId": "5bbc7b99a1d6ac2828cdab1c",
+ "courseId": "100000-1",
+ "__v": 0
+ }
+ ]
+ }
+ error:
+ {
+ state:'error'
+ data:err
+ }
+ */
+
 //参与统计
 /*url:student/vote
  parameter:
