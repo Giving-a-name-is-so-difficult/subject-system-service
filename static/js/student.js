@@ -555,16 +555,47 @@ $(function () {
                     alert('暂无实验')
                     $('#select_exp_info').removeClass('hidden')
                 } else {
-                    for (let i = 0; i < msg.data.length; i++) {
-                        let date = new Date(msg.data[i].expStartTime)
-                        let year = date.getFullYear()
-                        let month = date.getMonth() + 1
-                        let day = date.getDate()
-                        let time = year + '-' + month + '-' + day
-                        let str = '<tr> <td>' + msg.data[i].expId + '</td> <td>' + msg.data[i].expName + '</td> <td>' + time + '    ' + msg.data[i].expTime + '</td> <td>' + (msg.data[i].expPersonNum - msg.data[i].expPerson.length) + '</td> <td width="250" style="text-align: center;"> <button class="btn btn-success choose" type="submit">选择</button> </td> </tr>'
-                        $('#select_exp_info tbody').append(str)
-                    }
-                    $('#select_exp_info').removeClass('hidden')
+                    let allExp = msg.data
+                    $.ajax({
+                        type:"post",
+                        url:domain + 'student/getExpByUserIdAndCourseId',
+                        data:{
+                            courseId:courseId,
+                            userId:getCookie('userId')
+                        },
+                        success:function (msg) {
+                            for(let i=0;i<msg.data.length;i++){
+                                for(let j=0;j<allExp.length;j++){
+                                    if(msg.data[i].expId === allExp[j].expId){
+                                        allExp[j].isChoosed = true
+                                    }else if(msg.data[i].expName === allExp[j].expName){
+                                        allExp[j].isSameGroup = true
+                                    }
+                                }
+                            }
+
+                            for (let i = 0; i < allExp.length; i++) {
+                                let date = new Date(allExp[i].expStartTime)
+                                let year = date.getFullYear()
+                                let month = date.getMonth() + 1
+                                let day = date.getDate()
+                                let time = year + '-' + month + '-' + day
+                                if(allExp[i].isChoosed){
+                                    let str = '<tr> <td>' + allExp[i].expId + '</td> <td>' + allExp[i].expName + '</td> <td>' + time + '    ' + allExp[i].expTime + '</td> <td>' + (allExp[i].expPersonNum - allExp[i].expPerson.length) + '</td> <td width="250" style="text-align: center;"> <button class="btn btn-success disabled" type="submit">已选择</button> </td> </tr>'
+                                    $('#select_exp_info tbody').append(str)
+                                }else{
+                                    let str = '<tr> <td>' + allExp[i].expId + '</td> <td>' + allExp[i].expName + '</td> <td>' + time + '    ' + allExp[i].expTime + '</td> <td>' + (allExp[i].expPersonNum - allExp[i].expPerson.length) + '</td> <td width="250" style="text-align: center;"> <button class="btn btn-success choose" type="submit" data-issamegroup="'+allExp[i].isSameGroup+'">选择</button> </td> </tr>'
+                                    $('#select_exp_info tbody').append(str)
+                                }
+                            }
+                            $('#select_exp_info').removeClass('hidden')
+                        },
+                        error:function (err) {
+                            console.log(err);
+                            alert('请求错误')
+                            $('.look-exp').removeAttr('disabled')
+                        }
+                    })
                 }
             },
             error: function (err) {
@@ -579,30 +610,36 @@ $(function () {
     $('#select_exp_info').delegate('.choose', 'click', function () {
         let expId = $(this).parents('tr').children().eq(0).html()
         let courseId = getCookie('courseId')
-        $.ajax({
-            type: 'post',
-            url: domain + 'student/choseExp',
-            data: {
-                "expId": expId,
-                "courseId": courseId,
-                "userId": getCookie('userId'),
-                "userName": getCookie('userName'),
-                "belongClass": getCookie('belongClass')
-            },
-            success: function (msg) {
-                if (msg.state === 'error') {
-                    alert('后台错误')
-                    console.log(msg.data);
-                } else {
-                    alert(msg.data)
-                    $('#exp_select_info_back').trigger('click')
+        let isSameGroup = $(this).data('issamegroup')
+        if(isSameGroup === true){
+            alert("已选择该次实验，不可多次参与！！！")
+        }else{
+            $.ajax({
+                type: 'post',
+                url: domain + 'student/choseExp',
+                data: {
+                    "expId": expId,
+                    "courseId": courseId,
+                    "userId": getCookie('userId'),
+                    "userName": getCookie('userName'),
+                    "belongClass": getCookie('belongClass')
+                },
+                success: function (msg) {
+                    if (msg.state === 'error') {
+                        alert('后台错误')
+                        console.log(msg.data);
+                    } else {
+                        alert(msg.data)
+                        $('#exp_select_info_back').trigger('click')
+                    }
+                },
+                error: function (err) {
+                    alert('请求错误')
+                    console.log(err);
                 }
-            },
-            error: function (err) {
-                alert('请求错误')
-                console.log(err);
-            }
-        })
+            })
+        }
+
     })
 
     $('#exp_select_info_back').click(() => {

@@ -375,7 +375,7 @@ function ExcelGen(options) {
         workbook.tables.file("table1.xml", this.table.to_xml());
         workbook.base.generateAsync({ type: "blob" })
             .then(function (content) {
-                saveAs(content, "example.xlsx");
+                saveAs(content, "NameListOfExperiment.xlsx");
             });
     };
 

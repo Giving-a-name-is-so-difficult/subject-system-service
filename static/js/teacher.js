@@ -481,7 +481,7 @@ $(function () {
             let str = '<tr><td>'+colums.eq(0).html()+'_</td><td>'+colums.eq(1).html()+'</td><td>'+colums.eq(2).html()+'</td><td>   </td></tr>'
             table.append(str)
         }
-        excel = new ExcelGen({
+        let excel = new ExcelGen({
             "src_id": "export_excel_hidden",
             "show_header": true
         });
