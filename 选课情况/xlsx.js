@@ -1,6 +1,7 @@
 /**
  * Created by john on 2019/3/2.
  */
+console.log("正在提取数据，请勿关闭窗口");
 let xlsx = require("node-xlsx")
 let fs = require("fs")
 let data = xlsx.parse("./上课时间地点.xlsx")[0].data;
