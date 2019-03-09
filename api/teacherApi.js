@@ -1,7 +1,6 @@
 // 教师相关接口
 const Router = require('koa-router')
 const mongoose = require('mongoose')
-
 let router = new Router()
 
 router.get('/', async ctx => {
@@ -648,4 +647,317 @@ router.post('/changeGroup',async ctx=>{
     })
 })
 
+//智能排课
+router.post("/intelligence",async ctx=>{
+    let xlsx = require("node-xlsx")
+    function shuffle(a) {
+        /**
+         * 数组乱序排列
+         */
+        var len = a.length;
+        for (var i = 0; i < len - 1; i++) {
+            var index = parseInt(Math.random() * (len - i));
+            var temp = a[index];
+            a[index] = a[len - i - 1];
+            a[len - i - 1] = temp;
+        }
+    }
+    let fs = require("fs")
+    let courseIdList = ctx.request.body.courseIdList;
+    let maxNum = ctx.request.body.maxNum;
+    let classNum = ctx.request.body.classNum;
+    let timeSelect = ctx.request.body.timeSelect
+    for(let el of timeSelect){
+        el.person = []
+    }
+    let expInfo = []
+    let expResult = []
+    let stuList = []
+    await new Promise((resolve,reject)=>{
+        fs.readFile("./选课情况/courseInfo.json", function (err, data) {
+            if (err) {
+                console.log("读取失败");
+            } else {
+                let temp = data.toString();
+                let json = JSON.parse(temp)
+                for(let el of courseIdList){
+                    stuList = stuList.concat(json[el])
+                }
+                // console.log(stuList);
+                resolve()
+            }
+        })
+
+    })
+    let stuInfo = []
+    let returnData = {}
+    await new Promise((resolve,reject)=>{
+        fs.readFile("./选课情况/stuInfo.json", function (err, data) {
+            if (err) {
+                console.log("读取失败");
+            } else {
+                let temp = data.toString();
+                let json = JSON.parse(temp)
+                for (let el of stuList) {
+                    stuInfo.push(json[el])
+                }
+                function getExpInfo() {
+                    for (let exp of timeSelect) {
+                        let week = exp.time.split("-")[0]
+                        let day = exp.time.split("-")[1] + "-" + exp.time.split("-")[2]
+                        for (let el of stuInfo) {
+                            let flag = 0
+                            for (let i = 0; i < el.subjects.length; i++) {
+                                if (el.subjects[i].weekTimes.indexOf(parseInt(week)) > -1 && el.subjects[i].dayTimes.indexOf(day) > -1) {
+                                    flag = 1; //该学生在该时间段冲突
+                                    break;
+                                }
+                            }
+                            if (flag === 0) {
+                                exp.person.push(el.userId)
+                            }
+                        }
+                    }
+                    let indexs=[]
+                    for(let i=0;i<timeSelect.length;i++){
+                        indexs.push({
+                            num:timeSelect[i].person.length,
+                            index:i
+                        })
+                    }
+                    function compare(property){
+                        return function(obj1,obj2){
+                            var value1 = obj1[property];
+                            var value2 = obj2[property];
+                            return value2 - value1;     // 降序
+                        }
+                    }
+                    // console.log(indexs);
+                    let sortIndexs = indexs.sort(compare("num"));
+                    // console.log(sortIndexs);
+                    if(sortIndexs.length>classNum){
+                        for(let i=0;i<classNum;i++){
+                            let index = sortIndexs[i].index
+                            // console.log(index);
+                            expInfo[i] = timeSelect[index]
+                            expResult[i]={time:timeSelect[index].time,person:[]}
+                        }
+                    }else{
+                        for(let i=0;i<sortIndexs.length;i++){
+                            let index = sortIndexs[i].index
+                            // console.log(index);
+                            expInfo[i] = timeSelect[index]
+                            expResult[i]={time:timeSelect[index].time,person:[]}
+                        }
+                    }
+
+                }
+                getExpInfo();
+                //得到每个课堂可得到的所有学生
+                for (let exp of expInfo) {
+                    let week = exp.time.split("-")[0]
+                    let day = exp.time.split("-")[1] + "-" + exp.time.split("-")[2]
+                    // console.log(stuInfo[9].subjects[1].dayTimes.indexOf("5-1"));
+                    for (let el of stuInfo) {
+                        let flag = 0
+                        for (let i = 0; i < el.subjects.length; i++) {
+                            if (el.subjects[i].weekTimes.indexOf(parseInt(week)) > -1 && el.subjects[i].dayTimes.indexOf(day) > -1) {
+                                flag = 1; //该学生在该时间段冲突
+                                break;
+                            }
+                        }
+                        if (flag === 0) {
+                            exp.person.push(el.userId)
+                        }
+                    }
+                }
+                let sortResult = {}
+                let unfound = stuList.length
+                let unList = [] //记录每一步unfound值
+                let unfind=0
+                let loopNum = 500; //最大循环次数
+                for (var j = 0; j < loopNum; j++) {
+                    // console.log("第"+(j+1)+"次尝试****************")
+                    let temp=0
+                    //将学号数组乱序排列
+                    shuffle(stuList)
+                    for (let stu of stuList) {
+                        for (var i = 0; i < expInfo.length; i++) {
+                            if (expInfo[i].person.indexOf(stu + "") > -1) {
+                                if (expResult[i].person.length < maxNum) {
+                                    //该学生找到了合适的班级
+                                    expResult[i].person.push(stu)
+                                    break;
+                                }
+                            }
+                        }
+                        if (i === expInfo.length) {
+                            temp++
+                            //该学生没有合适的班级
+                            // console.log(stu + "没有找到合适的班级");
+                        }
+                    }
+                    unList.push(temp)
+
+                    if(temp === 0){
+                        // console.log("所有人都被安排了");
+                        sortResult = JSON.parse(JSON.stringify(expResult))
+                        let sortResultList = []
+                        for(let i=0;i<sortResult.length;i++){
+                            sortResultList[i]={
+                                time:sortResult[i].time,
+                                person:[]
+                            }
+                            for(let el of sortResult[i].person){
+                                sortResultList[i].person.push(json[el])
+                            }
+                        }
+                        let writeData = []
+                        for(let i=0;i<sortResultList.length;i++){
+                            let temp = []
+                            temp.push(["学号","姓名","班级"])
+                            for(let inner of sortResultList[i].person){
+                                let inTemp = []
+                                inTemp.push(inner.userId)
+                                inTemp.push(inner.userName)
+                                inTemp.push(inner.belongClass)
+                                temp.push(inTemp)
+                            }
+                            let nameTime = sortResultList[i].time.split("-")
+                            let sheetName = `第${nameTime[0]}周 星期${nameTime[1]} 第${nameTime[2]}大节`
+                            writeData.push({
+                                name:sheetName,
+                                data:temp
+                            })
+                        }
+                        let buffer = xlsx.build(writeData);
+                        let date = new Date().getTime()
+                        fs.writeFile('./upload/'+date+'.xlsx', buffer, function (err)
+                            {
+                                if (err)
+                                    throw err;
+                                console.log('Write to xls has finished');
+
+                            }
+                        );
+                        returnData =  returnData = {
+                            "unfound":"0",
+                            "fileName":date+".xlsx"
+                        }
+                        resolve()
+                        // console.log(sortResult);
+                        break;
+                    }else{
+                        // sortResult = JSON.parse(JSON.stringify(expResult))
+                        if(temp<unfound){
+                            unfound = temp
+                            sortResult = JSON.parse(JSON.stringify(expResult))
+                        }
+                        //清空暂存数据
+                        for(let el of expResult){
+                            el.person=[]
+                        }
+
+                    }
+                }
+                if(j ===loopNum){
+
+
+                    let left = []
+                    for(let stu of stuList){
+                        // console.log(typeof sortResult[0].person[0]);
+                        let flag = 0
+                        for(let exp of sortResult){
+                            if(exp.person.indexOf(stu)>-1){//该学生已经被安排
+                                flag = 1;
+                                break;
+                            }
+                        }
+                        if(flag ===0){
+                            left.push(stu)
+                        }
+                    }
+                    // console.log("最终结果如下");
+                    // console.log(sortResult);
+                    // console.log(unList);
+                    // console.log("仍有"+unfound+"人未被安排");
+                    // console.log(left);
+                    let sortResultList = []
+                    let leftList = []
+                    for(let i=0;i<sortResult.length;i++){
+                        sortResultList[i]={
+                            time:sortResult[i].time,
+                            person:[]
+                        }
+                        for(let el of sortResult[i].person){
+                            sortResultList[i].person.push(json[el])
+                        }
+                    }
+                    for(let el of left){
+                        leftList.push(json[el])
+                    }
+                    let writeData = []
+                    for(let i=0;i<sortResultList.length;i++){
+                        let temp = []
+                        temp.push(["学号","姓名","班级"])
+                        for(let inner of sortResultList[i].person){
+                            let inTemp = []
+                            inTemp.push(inner.userId)
+                            inTemp.push(inner.userName)
+                            inTemp.push(inner.belongClass)
+                            temp.push(inTemp)
+                        }
+                        let nameTime = sortResultList[i].time.split("-")
+                        let sheetName = `第${nameTime[0]}周 星期${nameTime[1]} 第${nameTime[2]}大节`
+                        writeData.push({
+                            name:sheetName,
+                            data:temp
+                        })
+                    }
+                    let leftTemp=[]
+                    leftTemp.push(["学号","姓名","班级"])
+                    for(let el of leftList){
+                        let temp = []
+                        temp.push(el.userId)
+                        temp.push(el.userName)
+                        temp.push(el.belongClass)
+                        leftTemp.push(temp)
+                    }
+                    writeData.push({
+                        name:"未被安排的名单",
+                        data:leftTemp
+                    })
+                    let buffer = xlsx.build(writeData);
+                    let date = new Date().getTime()
+                    fs.writeFile('./upload/'+date+'.xlsx', buffer, function (err)
+                        {
+                            if (err)
+                                throw err;
+                            console.log('Write to xls has finished');
+
+                        }
+                    );
+                    returnData = {
+                        "unfound":unfound,
+                        "fileName":date+".xlsx"
+                    }
+                    resolve()
+                }
+            }
+        })
+
+    })
+    ctx.body={
+        state:"success",
+        data:returnData
+    }
+})
+
+//下载排好的名单
+router.get('/download/:name', async function (ctx) {
+    const send = require('koa-send');
+    let fileName = ctx.params.name;
+    ctx.attachment(fileName);
+    await send(ctx, fileName, { root: "./upload/" });
+});
 module.exports = router

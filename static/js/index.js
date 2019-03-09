@@ -31,11 +31,11 @@ function copyRightUpdate() {
     let date = new Date()
     let year = date.getFullYear()
     if (year === 2018){
-        let string  = '&copy;2018 焦乾明 版权所有 指导教师：王雪'
-        $('.footer').html(string)
+        let string  = '&copy;2018 华北电力大学（保定） 版权所有 '
+        $('.footer .f-up').html(string)
     }else{
-        let string  = '&copy;2018-'+year+' 焦乾明 版权所有 指导教师：王雪'
-        $('.footer').html(string)
+        let string  = '&copy;2018-'+year+' 华北电力大学（保定） 版权所有 '
+        $('.footer .f-up').html(string)
     }
 
 }

@@ -2,3 +2,9 @@ node_modules/
 static/js/es5/
 static/js/es6/
 Login.log
+选课情况/courseInfo.json
+选课情况/stuInfo.json
+选课情况/上课时间地点.json
+选课情况/上课时间地点.xlsx
+选课情况/选课名单.xlsx
+upload/*.xlsx

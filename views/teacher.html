@@ -33,6 +33,7 @@
                 <li role="presentation"><a href="#course_set" role="tab" data-toggle="tab">课堂设置</a></li>
                 <li role="presentation"><a href="#experiment_manage" role="tab" data-toggle="tab" id="experiment_manage_title">实验管理</a></li>
                 <li role="presentation"><a href="#experiment_set" role="tab" data-toggle="tab" id="experiment_set_title">实验设置</a></li>
+                <li role="presentation"><a href="#intelligence" role="tab" data-toggle="tab" id="intelligence_title">智能排课</a></li>
             </ul>
         </div>
         <div class="col-md-9 con-right bg-info">
@@ -399,13 +400,185 @@
                         <button class="btn btn-success" id="launch_exp" style="width: 150px;margin-bottom: 20px;">发布实验安排</button>
                     </div>
                 </div>
+
+                <div role="tabpanel" class="tab-pane" id="intelligence">
+                    <form class="form-inline">
+                        <div class="form-group">
+                            <label for="classNum">课程号</label>
+                            <input type="number" class="form-control" id="courseNum" placeholder="请输入课程号">
+                        </div>
+                        <div class="form-group">
+                            <label for="maxNum">课序号</label>
+                            <input type="text" class="form-control" id="courseIndex" placeholder="请输入课序号">
+                        </div>
+                        <label class="text-danger">注：如打算多个课堂一起排，课序号用减号分割，如1-3-4表示选择课序号为1,3,4的课堂</label>
+                    </form>
+                    <form class="form-inline">
+                        <div class="form-group">
+                            <label for="classNum">课堂数</label>
+                            <input type="number" class="form-control" id="classNum" placeholder="请输入课堂数量">
+                        </div>
+                        <div class="form-group">
+                            <label for="maxNum">人数</label>
+                            <input type="number" class="form-control" id="maxNum" placeholder="请输入每个课堂最大人数">
+                        </div>
+                    </form>
+                    <form id="weeks">
+                        <label>请选择周数</label>
+                        <label class="checkbox-inline">
+                            <input type="checkbox" id="week1" value="1"> 1
+                        </label>
+                        <label class="checkbox-inline">
+                            <input type="checkbox" id="week2" value="2"> 2
+                        </label>
+                        <label class="checkbox-inline">
+                            <input type="checkbox" id="week3" value="3"> 3
+                        </label>
+                        <label class="checkbox-inline">
+                            <input type="checkbox" id="week4" value="4"> 4
+                        </label>
+                        <label class="checkbox-inline">
+                            <input type="checkbox" id="week5" value="5"> 5
+                        </label>
+                        <label class="checkbox-inline">
+                            <input type="checkbox" id="week6" value="6"> 6
+                        </label>
+                        <label class="checkbox-inline">
+                            <input type="checkbox" id="week7" value="7"> 7
+                        </label>
+                        <label class="checkbox-inline">
+                            <input type="checkbox" id="week8" value="8"> 8
+                        </label>
+                        <label class="checkbox-inline">
+                            <input type="checkbox" id="week9" value="9"> 9
+                        </label>
+                        <label class="checkbox-inline">
+                            <input type="checkbox" id="week10" value="10"> 10
+                        </label>
+                        <label class="checkbox-inline">
+                            <input type="checkbox" id="week11" value="11"> 11
+                        </label>
+                        <label class="checkbox-inline">
+                            <input type="checkbox" id="week12" value="12"> 12
+                        </label>
+                        <label class="checkbox-inline">
+                            <input type="checkbox" id="week13" value="13"> 13
+                        </label>
+                        <label class="checkbox-inline">
+                            <input type="checkbox" id="week14" value="14"> 14
+                        </label>
+                        <label class="checkbox-inline">
+                            <input type="checkbox" id="week15" value="15"> 15
+                        </label>
+                        <label class="checkbox-inline">
+                            <input type="checkbox" id="week16" value="16"> 16
+                        </label>
+                        <label class="checkbox-inline">
+                            <input type="checkbox" id="week17" value="17"> 17
+                        </label>
+                        <label class="checkbox-inline">
+                            <input type="checkbox" id="week18" value="18"> 18
+                        </label>
+                        <label class="checkbox-inline">
+                            <input type="checkbox" id="week19" value="19"> 19
+                        </label>
+                        <label class="checkbox-inline">
+                            <input type="checkbox" id="week20" value="20"> 20
+                        </label>
+                        <label class="checkbox-inline">
+                            <input type="checkbox" id="week21" value="21"> 21
+                        </label>
+                        <label class="checkbox-inline">
+                            <input type="checkbox" id="week22" value="22"> 22
+                        </label>
+                        <label class="checkbox-inline">
+                            <input type="checkbox" id="week23" value="23"> 23
+                        </label>
+
+                    </form>
+                    <table id="time-select" class="table table-bordered table-striped table-hover">
+                        <h4>请从下面选择合适的课堂</h4>
+                        <thead>
+                        <tr>
+                            <td style="pointer-events: none; ">节\星期</td>
+                            <td style="pointer-events: none; ">星期1</td>
+                            <td style="pointer-events: none; ">星期2</td>
+                            <td style="pointer-events: none; ">星期3</td>
+                            <td style="pointer-events: none; ">星期4</td>
+                            <td style="pointer-events: none; ">星期5</td>
+                            <td style="pointer-events: none; ">星期6</td>
+                            <td style="pointer-events: none; ">星期7</td>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td style="pointer-events: none; ">第1大节</td>
+                            <td data-day="1-1"></td>
+                            <td data-day="2-1"></td>
+                            <td data-day="3-1"></td>
+                            <td data-day="4-1"></td>
+                            <td data-day="5-1"></td>
+                            <td data-day="6-1"></td>
+                            <td data-day="7-1"></td>
+                        </tr>
+                        <tr>
+                            <td style="pointer-events: none; ">第2大节</td>
+                            <td data-day="1-2"></td>
+                            <td data-day="2-2"></td>
+                            <td data-day="3-2"></td>
+                            <td data-day="4-2"></td>
+                            <td data-day="5-2"></td>
+                            <td data-day="6-2"></td>
+                            <td data-day="7-2"></td>
+                        </tr>
+                        <tr>
+                            <td style="pointer-events: none; ">第3大节</td>
+                            <td data-day="1-3"></td>
+                            <td data-day="2-3"></td>
+                            <td data-day="3-3"></td>
+                            <td data-day="4-3"></td>
+                            <td data-day="5-3"></td>
+                            <td data-day="6-3"></td>
+                            <td data-day="7-3"></td>
+                        </tr>
+                        <tr>
+                            <td style="pointer-events: none; ">第4大节</td>
+                            <td data-day="1-4"></td>
+                            <td data-day="2-4"></td>
+                            <td data-day="3-4"></td>
+                            <td data-day="4-4"></td>
+                            <td data-day="5-4"></td>
+                            <td data-day="6-4"></td>
+                            <td data-day="7-4"></td>
+                        </tr>
+                        <tr>
+                            <td style="pointer-events: none; ">第5大节</td>
+                            <td data-day="1-5"></td>
+                            <td data-day="2-5"></td>
+                            <td data-day="3-5"></td>
+                            <td data-day="4-5"></td>
+                            <td data-day="5-5"></td>
+                            <td data-day="6-5"></td>
+                            <td data-day="7-5"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <div style="margin-left: 50%;position: absolute;left: -100px">
+                        <button type="button" class="btn btn-info" style="width: 100px;" id="intell_submit">提交</button>
+                        <button type="button" class="btn btn-info" style="width: 100px;" id="download">下载</button>
+                    </div>
+
+                    <iframe name="myIframe" style="display:none"></iframe>
+                </div>
                 </div>
             </div>
         </div>
     </div>
 <div class="footer">
-
+    <span class="text-center f-up"></span>
+    <span style="position: absolute;right: 10px;color:#a8a8a8">指导教师：王雪   网站制作：焦乾明</span>
 </div>
+
 
 <!--换组模态框-->
 <div class="modal fade" id="change_group" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
@@ -446,7 +619,9 @@
 <!--换组模态框-->
 
 
-
+<script>
+    let xlsxData=[]
+</script>
 <!-- jQuery (Bootstrap 的所有 JavaScript 插件都依赖 jQuery，所以必须放在前边) -->
 <script src="./js/lib/jquery/jquery-1.12.4.js"></script>
 <!-- 加载 Bootstrap 的所有 JavaScript 插件。你也可以根据需要只加载单个插件。 -->

@@ -265,6 +265,8 @@ $(function () {
             }
         })
     })
+    let row_change;
+    let button_change;
     $('#change_group tbody').delegate('.change-in','click',function () {
         let button = $(this)
         button.attr('disabled','disabled')
@@ -283,9 +285,11 @@ $(function () {
                 if(msg.state ==='success'){
                     alert(msg.data)
                     button.removeAttr('disabled')
+                    row_change.remove()
                 }else if(msg.state ==='wrong'){
                     alert(msg.data)
                     button.removeAttr('disabled')
+                    button_change.removeAttr("disabled")
                 }else if(msg.state ==='error'){
                     alert('后台错误')
                     console.log(msg.data);
@@ -301,18 +305,18 @@ $(function () {
         $('#change_group').modal('toggle')
     })
     $('.exp-con').delegate('.change-group','click',function () {
-        let button = $(this)
-        button.attr('disabled','disabled')
-        let row = button.parents('tr')
-        let userId = row.children().eq(0).html()
-        let changeUserName = row.children().eq(1).html()
-        let changeBelongClass = row.children().eq(2).html()
+        button_change = $(this)
+        button_change.attr('disabled','disabled')
+        row_change = button_change.parents('tr')
+        let userId = row_change.children().eq(0).html()
+        let changeUserName = row_change.children().eq(1).html()
+        let changeBelongClass = row_change.children().eq(2).html()
         let oldExpId = $('#con_exp_id').html().slice(5)
         addCookie('changeUserId',userId)
         addCookie('changeUserName',changeUserName)
         addCookie('changeBelongClass',changeBelongClass)
         addCookie('oldExpId',oldExpId)
-        row.remove()
+        // row.remove()
         $('#change_group').modal('toggle')
     })
 
@@ -858,4 +862,164 @@ $(function () {
     //实验设置结束
 
 
+    //智能排课开始
+
+    // //读取excel开始
+    //
+    // $("#file").change( function importf(obj) {//导入
+    //     let wb;//读取完成的数据
+    //     let rABS = false; //是否将文件读取为二进制字符串
+    //     console.log("s");
+    //     if(!obj.files) {
+    //         return;
+    //     }
+    //     var f = obj.files[0];
+    //     var reader = new FileReader();
+    //     reader.onload = function(e) {
+    //         var data = e.target.result;
+    //         if(rABS) {
+    //             wb = XLSX.read(btoa(fixdata(data)), {//手动转化
+    //                 type: 'base64'
+    //             });
+    //         } else {
+    //             wb = XLSX.read(data, {
+    //                 type: 'binary'
+    //             });
+    //         }
+    //         //wb.SheetNames[0]是获取Sheets中第一个Sheet的名字
+    //         //wb.Sheets[Sheet名]获取第一个Sheet的数据
+    //        // document.getElementById("demo").innerHTML= JSON.stringify(XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]));
+    //         console.log(JSON.stringify(XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]])));
+    //     };
+    //     if(rABS) {
+    //         reader.readAsArrayBuffer(f);
+    //     } else {
+    //         reader.readAsBinaryString(f);
+    //     }
+    // })
+    //
+    // function fixdata(data) { //文件流转BinaryString
+    //     var o = "",
+    //         l = 0,
+    //         w = 10240;
+    //     for(; l < data.byteLength / w; ++l) o += String.fromCharCode.apply(null, new Uint8Array(data.slice(l * w, l * w + w)));
+    //     o += String.fromCharCode.apply(null, new Uint8Array(data.slice(l * w)));
+    //     return o;
+    // }
+    // //读取excel结束
+
+
+    $("#time-select td").click(function () {
+        $(this).toggleClass("bg-primary")
+        // console.log($(this).data("day"));
+    })
+    $("#intell_submit").click(function () {
+        let button = $(this)
+        button.text("排序中")
+        button.attr('disabled','disabled')
+        let courseNum = $("#courseNum").val();
+        let courseIndex = $("#courseIndex").val();
+        let courseIdList = []
+        if(courseNum === ""){
+            alert("请输入课程号")
+            button.text("提交")
+            button.removeAttr('disabled')
+        }else if(courseIndex === ""){
+            alert("请输入课序号")
+            button.text("提交")
+            button.removeAttr('disabled')
+        }
+        let courseIndexList = courseIndex.split("-")
+        for(let el of courseIndexList){
+            let courseId = courseNum + "-"+el
+            courseIdList.push(courseId)
+        }
+        let classNum = $("#classNum").val();
+        let maxNum = $("#maxNum").val();
+        let weeks=[]
+        for(let i=0;i<$("#weeks input:checked").length;i++){
+            weeks.push($("#weeks input:checked").eq(i).val())
+        }
+        let days = []
+        for(let i=0;i<$("#time-select .bg-primary").length;i++){
+            days.push($("#time-select .bg-primary").eq(i).data("day"))
+        }
+        let times=[]
+        for(let el of weeks){
+            for (let inner of days){
+                let time = el+"-"+inner;
+                times.push(time)
+            }
+        }
+        if(classNum === ""){
+            alert("请输入课堂数量")
+            button.text("提交")
+            button.removeAttr('disabled')
+        }else if(maxNum === ""){
+            alert("请输入课堂最大人数")
+            button.text("提交")
+            button.removeAttr('disabled')
+        }else if(weeks.length === 0){
+            alert("请选择周数")
+            button.text("提交")
+            button.removeAttr('disabled')
+        }else if(days.length === 0){
+            alert("请从表格中选择合适的时间")
+            button.text("提交")
+            button.removeAttr('disabled')
+        }else{
+            let info = {
+                "courseIdList":courseIdList,
+                "classNum":classNum,
+                "maxNum":maxNum,
+                "timeSelect":[]
+            }
+            for(let el of times){
+                info.timeSelect.push({
+                    "time":el
+                })
+            }
+
+            $.ajax({
+                type: "post",
+                url: domain + 'teacher/intelligence',
+                data: info,
+                success: function (msg) {
+                    if (msg.state === 'success') {
+                        if(msg.data.unfound === "0"){
+                            alert("所有学生都已被安排，请点击下载按钮下载")
+                            $("#download").data("file",msg.data.fileName)
+                            button.text("提交")
+                            button.removeAttr('disabled')
+                        }else{
+                            alert("还有"+msg.data.unfound+"个学生没有被安排，如需查看，请下载，否则请重试")
+                            $("#download").data("file",msg.data.fileName)
+                            button.text("提交")
+                            button.removeAttr('disabled')
+                        }
+                        // console.log(msg.data);
+                    }else{
+                        alert("请求错误")
+                        button.text("提交")
+                        button.removeAttr('disabled')
+                    }
+                },
+                error: function (err) {
+                    console.log(err);
+                    alert('请求错误')
+                    button.text("提交")
+                    button.removeAttr('disabled')
+                }
+            })
+        }
+    })
+    $("#download").click(function () {
+        let fileName =$("#download").data("file")
+        if(fileName){
+            window.open("/teacher/download/"+fileName, "myIframe")
+        }else{
+            alert("您还没有提交数据")
+        }
+    })
+    //智能排课结束
 })

@@ -1,97 +1,97 @@
 //注册接口
 /*url:registerAndLogin/register
-parameter:
-{
-    userId:String,
-    userName:String,
-    password:String,
-    role:String[,
-    belongClass:String]
-},
-result:
-success:
-{
-    state: 'success',
-    data: {
-              userId:userId,
-              userName:userName,
-              role:role
-          }
-}
-wrong:
-{
-    state:'wrong'
-    data:'该账号已注册'
-}
-error:
-{
-    state:'error'
-    data:err
-}
-*/
+ parameter:
+ {
+ userId:String,
+ userName:String,
+ password:String,
+ role:String[,
+ belongClass:String]
+ },
+ result:
+ success:
+ {
+ state: 'success',
+ data: {
+ userId:userId,
+ userName:userName,
+ role:role
+ }
+ }
+ wrong:
+ {
+ state:'wrong'
+ data:'该账号已注册'
+ }
+ error:
+ {
+ state:'error'
+ data:err
+ }
+ */
 
 //登录接口
 /*url:registerAndLogin/login
-parameter:
-{
-    userId:String,
-    password:String
-},
-result:
-success:
-{
-    state: 'success',
-    data: {
-              userId:userId,
-              userName:userName,
-              role:role
-          }
-}
-wrong:
-{
-    state:'wrong'
-    data:'账号或密码错误'
-}
-wrong:
-{
-    state:'wrong'
-    data:'用户不存在'
-}
-error:
-{
-    state:'error'
-    data:err
-}
+ parameter:
+ {
+ userId:String,
+ password:String
+ },
+ result:
+ success:
+ {
+ state: 'success',
+ data: {
+ userId:userId,
+ userName:userName,
+ role:role
+ }
+ }
+ wrong:
+ {
+ state:'wrong'
+ data:'账号或密码错误'
+ }
+ wrong:
+ {
+ state:'wrong'
+ data:'用户不存在'
+ }
+ error:
+ {
+ state:'error'
+ data:err
+ }
 
-*/
+ */
 
 //设置课程
 /*url:teacher/setCourse
-parameter:
-{
-    "courseId":String,（课序号-课程号）
-    "courseName":String,
-    "courseTeacher":String,
-    "courseTeacherId":String,
-    "coursePersonNum":String
-},
-result:
-success:
-{
-    state: 'success',
-    data: '保存成功'
-}
-wrong:
-{
-    state:'wrong'
-    data:'该课程已存在'
-}
-error:
-{
-    state:'error'
-    data:err
-}
-*/
+ parameter:
+ {
+ "courseId":String,（课序号-课程号）
+ "courseName":String,
+ "courseTeacher":String,
+ "courseTeacherId":String,
+ "coursePersonNum":String
+ },
+ result:
+ success:
+ {
+ state: 'success',
+ data: '保存成功'
+ }
+ wrong:
+ {
+ state:'wrong'
+ data:'该课程已存在'
+ }
+ error:
+ {
+ state:'error'
+ data:err
+ }
+ */
 
 //删除课堂
 /*
@@ -115,50 +115,50 @@ error:
 
 //查找课程
 /*url:teacher/getCourseByTeacherId
-parameter:
-{
-    "courseTeacherId":String
-},
-result:
-success:示例
-{
-    state: 'success',
-    data:  [
-                  {
-                      "_id": "5b6286f8a94b259b80120554",
-                      "courseId": "100000-1",
-                      "courseName": "工程电磁场",
-                      "courseTeacher": "安勃",
-                      "courseTeacherId": "201001010101",
-                      "coursePersonNum": "100",
-                      "coursePerson": [],
-                      "courseStatistic": [],
-                      "courseExperiment": [],
-                      "__v": 0
-                  },
-                  {
-                      "_id": "5b628702a94b259b80120556",
-                      "courseId": "100000-2",
-                      "courseName": "信号处理",
-                      "courseTeacher": "安勃",
-                      "courseTeacherId": "201001010101",
-                      "coursePersonNum": "100",
-                      "coursePerson": [],
-                      "courseStatistic": [],
-                      "courseExperiment": [],
-                      "__v": 0
-                  }
-              ]
-}
-error:
-{
-    state:'error'
-    data:err
-}
+ parameter:
+ {
+ "courseTeacherId":String
+ },
+ result:
+ success:示例
+ {
+ state: 'success',
+ data:  [
+ {
+ "_id": "5b6286f8a94b259b80120554",
+ "courseId": "100000-1",
+ "courseName": "工程电磁场",
+ "courseTeacher": "安勃",
+ "courseTeacherId": "201001010101",
+ "coursePersonNum": "100",
+ "coursePerson": [],
+ "courseStatistic": [],
+ "courseExperiment": [],
+ "__v": 0
+ },
+ {
+ "_id": "5b628702a94b259b80120556",
+ "courseId": "100000-2",
+ "courseName": "信号处理",
+ "courseTeacher": "安勃",
+ "courseTeacherId": "201001010101",
+ "coursePersonNum": "100",
+ "coursePerson": [],
+ "courseStatistic": [],
+ "courseExperiment": [],
+ "__v": 0
+ }
+ ]
+ }
+ error:
+ {
+ state:'error'
+ data:err
+ }
 
 
 
-*/
+ */
 
 //根据课程id查找课程
 /*url:teacher/getCourseByCourseId
@@ -243,24 +243,24 @@ error:
  url:student/getInCourse
  parameter:
  {
-     "userId":String,
-     "courseId":String(课序号-课程号)
+ "userId":String,
+ "courseId":String(课序号-课程号)
  },
  result:
  success:
  {
-     state: 'success',
-     data: '加入成功'
+ state: 'success',
+ data: '加入成功'
  }
  wrong:
  {
-    state:'wrong',
-    data:'已加入该课堂'
+ state:'wrong',
+ data:'已加入该课堂'
  }
  error:
  {
-     state:'error'
-     data:err
+ state:'error'
+ data:err
  }
  * */
 
@@ -313,13 +313,13 @@ error:
  state:'error'
  data:err
  }
-* */
+ * */
 
 //删除统计
 /*url:teacher/delStatistic
  parameter:
  {
-    "staId":"******"
+ "staId":"******"
  },
  result:
  success:
@@ -341,7 +341,7 @@ error:
 
 //查找统计
 /*
-     url:teacher/getStatistic
+ url:teacher/getStatistic
  parameter:
  {
  "courseId" :String
@@ -423,7 +423,7 @@ error:
  state:'error'
  data:err
  }
-* */
+ * */
 
 //根据统计id查找统计
 /*
@@ -574,13 +574,13 @@ error:
  url:teacher/setExp
  parameter:
  {
-     "expName":String,
-     "expStartTime" : String,
-     "expTime" : String,
-     "expPersonNum" : String,
-     "courseId" :String,
-     "teacherId" : String,
-     "teacherName" : String
+ "expName":String,
+ "expStartTime" : String,
+ "expTime" : String,
+ "expPersonNum" : String,
+ "courseId" :String,
+ "teacherId" : String,
+ "teacherName" : String
  },
  result:
  success:
@@ -593,7 +593,7 @@ error:
  state:'error'
  data:err
  }
-*/
+ */
 
 //查找实验(某课程开设的实验)
 /*
@@ -665,7 +665,7 @@ error:
  state:'error'
  data:err
  }
-* */
+ * */
 
 //确认某组实验（学生将不能自行退出实验）
 /*
@@ -995,4 +995,24 @@ error:
  }
  * */
 
+//智能排课
+/*
+ url:teacher/intelligence
+ parameter:
+ {//示例
+ "courseIdList":courseIdList,
+ "classNum":classNum,
+ "maxNum":maxNum,
+ "timeSelect":[]
+ }
+ result:
+ success:实例
+ {
+ "state": "success",
+ "data": {
+ "unfound":unfound,
+ "fileName":fileName
+ }
+ }
 
+ * */
